@@ -52,6 +52,8 @@ export interface Resources {
   livingNameAnchor: number;
   thresholdAsh: number;
   niraFirstSound: number;
+  hearthCinder: number;
+  houseLedgerMark: number;
 }
 
 export interface Tools {
@@ -90,6 +92,9 @@ export interface RepetitionVariables {
   niraHouseInspectCount: number;
   niraDoorListenCount: number;
   niraMemoryListenCount: number;
+  niraKitchenInspectCount: number;
+  niraInsideTalkCount: number;
+  coldHearthSearchCount: number;
 }
 
 export interface CombatState {

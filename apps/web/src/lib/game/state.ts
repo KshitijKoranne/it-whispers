@@ -43,6 +43,8 @@ export function createInitialGameState(): GameState {
       livingNameAnchor: 0,
       thresholdAsh: 0,
       niraFirstSound: 0,
+      hearthCinder: 0,
+      houseLedgerMark: 0,
     },
     tools: {
       hasLantern: false,
@@ -98,6 +100,9 @@ export function createInitialGameState(): GameState {
       niraHouseInspectCount: 0,
       niraDoorListenCount: 0,
       niraMemoryListenCount: 0,
+      niraKitchenInspectCount: 0,
+      niraInsideTalkCount: 0,
+      coldHearthSearchCount: 0,
     },
     settings: {
       sound: true,

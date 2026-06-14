@@ -150,6 +150,28 @@ function teachNirasQuietName(state = returnNirasFirstSound()): GameState {
   return findAction(state, 'teach-nira-the-quiet-name').onExecute(state).newState;
 }
 
+function enterNirasKitchen(state = teachNirasQuietName()): GameState {
+  return findAction(state, 'enter-niras-house').onExecute(state).newState;
+}
+
+function inspectNirasKitchen(state = enterNirasKitchen()): GameState {
+  const inspect = findAction(state, 'inspect-niras-kitchen');
+  const firstInspect = inspect.onExecute(state).newState;
+  return inspect.onExecute(firstInspect).newState;
+}
+
+function hearNirasInsideAccount(state = enterNirasKitchen()): GameState {
+  const talk = findAction(state, 'talk-to-nira-inside');
+  const firstTalk = talk.onExecute(state).newState;
+  return talk.onExecute(firstTalk).newState;
+}
+
+function findHearthCinder(state = inspectNirasKitchen()): GameState {
+  const search = findAction(state, 'search-the-cold-hearth');
+  const firstSearch = search.onExecute(state).newState;
+  return search.onExecute(firstSearch).newState;
+}
+
 function enterChapter3(): GameState {
   const chapter2Complete = {
     ...completeFirstArc(),
@@ -874,5 +896,79 @@ describe('Chapter 4 transition', () => {
     expect(inside.flags.niraDoorOpened).toBe(true);
     expect(inside.flags.chapter5HouseEntered).toBe(true);
     expect(getVisibleActions(inside).some((action) => action.id === 'enter-niras-house')).toBe(false);
+  });
+
+  it('starts the Nira kitchen interior and hides exterior door actions', () => {
+    const inside = enterNirasKitchen();
+    const visibleIds = getVisibleActions(inside).map((action) => action.id);
+
+    expect(inside.currentLocation).toBe("Nira's Kitchen");
+    expect(visibleIds).toContain('inspect-niras-kitchen');
+    expect(visibleIds).toContain('talk-to-nira-inside');
+    expect(visibleIds).not.toContain('inspect-niras-house');
+    expect(visibleIds).not.toContain('listen-at-niras-door');
+    expect(visibleIds).not.toContain('dust-niras-threshold');
+    expect(visibleIds).not.toContain('call-nira-softly');
+    expect(visibleIds).not.toContain('slide-stitched-page-under-door');
+    expect(visibleIds).not.toContain('teach-nira-the-quiet-name');
+  });
+
+  it('uses kitchen inspection to reveal ledger scratches before the hearth search', () => {
+    const inside = enterNirasKitchen();
+    expect(getVisibleActions(inside).some((action) => action.id === 'search-the-cold-hearth')).toBe(false);
+
+    const inspect = findAction(inside, 'inspect-niras-kitchen');
+    const firstInspect = inspect.onExecute(inside).newState;
+    expect(firstInspect.flags.sawNiraKitchenPins).toBe(true);
+    expect(getVisibleActions(firstInspect).some((action) => action.id === 'search-the-cold-hearth')).toBe(false);
+
+    const secondInspect = inspect.onExecute(firstInspect).newState;
+    expect(secondInspect.flags.sawKitchenLedgerScratches).toBe(true);
+    expect(secondInspect.repetition.niraKitchenInspectCount).toBe(2);
+    expect(getVisibleActions(secondInspect).some((action) => action.id === 'search-the-cold-hearth')).toBe(true);
+  });
+
+  it('requires two talks before Nira identifies the ledger visitor', () => {
+    const inside = enterNirasKitchen();
+    const talk = findAction(inside, 'talk-to-nira-inside');
+
+    const firstTalk = talk.onExecute(inside).newState;
+    expect(firstTalk.flags.niraDescribedLedgerVisitor).not.toBe(true);
+
+    const secondTalk = talk.onExecute(firstTalk).newState;
+    expect(secondTalk.flags.niraDescribedLedgerVisitor).toBe(true);
+    expect(secondTalk.repetition.niraInsideTalkCount).toBe(2);
+    expect(talk.isDisabled?.(secondTalk)).toBe(true);
+  });
+
+  it('finds the hearth cinder only after the scratched kitchen floor is understood', () => {
+    const inspected = inspectNirasKitchen();
+    const search = findAction(inspected, 'search-the-cold-hearth');
+
+    const firstSearch = search.onExecute(inspected).newState;
+    expect(firstSearch.flags.foundHearthCinder).not.toBe(true);
+
+    const secondSearch = search.onExecute(firstSearch).newState;
+    expect(secondSearch.flags.foundHearthCinder).toBe(true);
+    expect(secondSearch.resources.hearthCinder).toBe(1);
+    expect(search.isDisabled?.(secondSearch)).toBe(true);
+  });
+
+  it('reveals the house ledger mark only after Nira account and hearth cinder', () => {
+    const onlyNiraAccount = hearNirasInsideAccount();
+    const onlyHearthCinder = findHearthCinder();
+
+    expect(getVisibleActions(onlyNiraAccount).some((action) => action.id === 'reveal-the-house-ledger-mark')).toBe(false);
+    expect(getVisibleActions(onlyHearthCinder).some((action) => action.id === 'reveal-the-house-ledger-mark')).toBe(false);
+
+    const ready = hearNirasInsideAccount(onlyHearthCinder);
+    const reveal = findAction(ready, 'reveal-the-house-ledger-mark');
+    const revealed = reveal.onExecute(ready).newState;
+
+    expect(revealed.flags.houseLedgerMarkRevealed).toBe(true);
+    expect(revealed.flags.chapter5MiddleActive).toBe(true);
+    expect(revealed.resources.houseLedgerMark).toBe(1);
+    expect(revealed.resources.hearthCinder).toBe(1);
+    expect(reveal.isDisabled?.(revealed)).toBe(true);
   });
 });

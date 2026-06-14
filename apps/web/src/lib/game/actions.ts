@@ -2132,7 +2132,7 @@ const inspectNirasHouseAction: GameAction = {
   cooldownSeconds: 4,
   inGameMinutesPassed: 10,
   repeatable: true,
-  visible: inChapter5,
+  visible: (state) => inChapter5(state) && !flag(state, 'chapter5HouseEntered'),
   isDisabled: (state) => state.repetition.niraHouseInspectCount >= 2,
   getDisabledReason: () => 'the house has shown what it can from outside.',
   onExecute: (state) => {
@@ -2171,7 +2171,8 @@ const listenAtNirasDoorAction: GameAction = {
   cooldownSeconds: 5,
   inGameMinutesPassed: 10,
   repeatable: true,
-  visible: (state) => inChapter5(state) && flag(state, 'sawNiraWindow'),
+  visible: (state) =>
+    inChapter5(state) && flag(state, 'sawNiraWindow') && !flag(state, 'chapter5HouseEntered'),
   isDisabled: (state) => state.repetition.niraDoorListenCount >= 2,
   getDisabledReason: () => 'you know enough to answer carefully.',
   onExecute: (state) => {
@@ -2204,7 +2205,8 @@ const dustNirasThresholdAction: GameAction = {
   cooldownSeconds: 5,
   inGameMinutesPassed: 15,
   repeatable: false,
-  visible: (state) => inChapter5(state) && flag(state, 'heardNiraInside'),
+  visible: (state) =>
+    inChapter5(state) && flag(state, 'heardNiraInside') && !flag(state, 'chapter5HouseEntered'),
   isDisabled: (state) =>
     state.resources.livingNameAnchor < 1 ||
     state.resources.thresholdAsh < 1 ||
@@ -2239,7 +2241,8 @@ const callNiraSoftlyAction: GameAction = {
   cooldownSeconds: 5,
   inGameMinutesPassed: 10,
   repeatable: false,
-  visible: (state) => inChapter5(state) && flag(state, 'niraThresholdWarded'),
+  visible: (state) =>
+    inChapter5(state) && flag(state, 'niraThresholdWarded') && !flag(state, 'chapter5HouseEntered'),
   isDisabled: (state) => flag(state, 'niraAnsweredFromInside'),
   getDisabledReason: () => 'Nira has heard you.',
   onExecute: (state) => {
@@ -2298,7 +2301,8 @@ const slideStitchedPageUnderDoorAction: GameAction = {
   cooldownSeconds: 5,
   inGameMinutesPassed: 15,
   repeatable: false,
-  visible: (state) => inChapter5(state) && flag(state, 'niraFirstSoundMissing'),
+  visible: (state) =>
+    inChapter5(state) && flag(state, 'niraFirstSoundMissing') && !flag(state, 'chapter5HouseEntered'),
   isDisabled: (state) =>
     state.resources.stitchedLedgerPage < 1 ||
     state.resources.livingNameAnchor < 1 ||
@@ -2334,7 +2338,8 @@ const teachNiraQuietNameAction: GameAction = {
   cooldownSeconds: 5,
   inGameMinutesPassed: 10,
   repeatable: false,
-  visible: (state) => inChapter5(state) && flag(state, 'niraFirstSoundReturned'),
+  visible: (state) =>
+    inChapter5(state) && flag(state, 'niraFirstSoundReturned') && !flag(state, 'chapter5HouseEntered'),
   isDisabled: (state) => state.resources.niraFirstSound < 1 || flag(state, 'niraQuietNameKnown'),
   getDisabledReason: (state) => {
     if (flag(state, 'niraQuietNameKnown')) return 'Nira knows how to hold her name quietly.';
@@ -2373,6 +2378,150 @@ const enterNirasHouseAction: GameAction = {
     newState = setFlag(newState, 'niraDoorOpened', true);
     newState = setFlag(newState, 'chapter5HouseEntered', true);
     newState = addLogEntry(newState, text, 'story');
+    return { newState, logText: text };
+  },
+};
+
+const inspectNirasKitchenAction: GameAction = {
+  id: 'inspect-niras-kitchen',
+  label: "inspect Nira's kitchen",
+  cooldownSeconds: 4,
+  inGameMinutesPassed: 10,
+  repeatable: true,
+  visible: (state) => inChapter5(state) && flag(state, 'chapter5HouseEntered'),
+  isDisabled: (state) => state.repetition.niraKitchenInspectCount >= 2,
+  getDisabledReason: () => 'the kitchen has shown its useful signs.',
+  onExecute: (state) => {
+    const count = state.repetition.niraKitchenInspectCount;
+    let newState = advanceTime({ ...state }, 10);
+
+    let text: string;
+    if (count === 0) {
+      text =
+        'Nira keeps the kitchen too neat for someone who has been afraid all night.\na bowl waits on the table with water gone black at the bottom.\nbeside it: three pins, all bent open.';
+      newState = setFlag(newState, 'sawNiraKitchenPins', true);
+    } else {
+      text =
+        'near the hearth, the floorboards carry thin scratch marks.\nnot made by claws.\nmade by the corner of a ledger dragged back and forth until the wood learned its shape.';
+      newState = setFlag(newState, 'sawKitchenLedgerScratches', true);
+    }
+
+    newState = addLogEntry(newState, text, count === 1 ? 'whisper' : 'story');
+    newState.repetition = {
+      ...newState.repetition,
+      niraKitchenInspectCount: count + 1,
+    };
+    return { newState, logText: text };
+  },
+};
+
+const talkToNiraInsideAction: GameAction = {
+  id: 'talk-to-nira-inside',
+  label: 'talk to Nira inside',
+  cooldownSeconds: 5,
+  inGameMinutesPassed: 10,
+  repeatable: true,
+  visible: (state) => inChapter5(state) && flag(state, 'chapter5HouseEntered'),
+  isDisabled: (state) => state.repetition.niraInsideTalkCount >= 2,
+  getDisabledReason: () => 'Nira has told you what she can bear.',
+  onExecute: (state) => {
+    const count = state.repetition.niraInsideTalkCount;
+    let newState = advanceTime({ ...state }, 10);
+
+    const text =
+      count === 0
+        ? 'Nira sits with both hands wrapped around the lantern handle, though it is yours.\n"it came before dark," she says.\n"not a person. not a grave. a book sound at the door."'
+        : '"it asked no question," Nira says.\n"it only waited until i tried to answer my mother."\nher voice catches at the first letter, then holds.\n"something outside wrote where my name should start."';
+
+    newState = addLogEntry(newState, text, 'whisper');
+    newState.repetition = {
+      ...newState.repetition,
+      niraInsideTalkCount: count + 1,
+      whisperLevel: newState.repetition.whisperLevel + 1,
+    };
+
+    if (count === 1) {
+      newState = setFlag(newState, 'niraDescribedLedgerVisitor', true);
+    }
+
+    return { newState, logText: text };
+  },
+};
+
+const searchColdHearthAction: GameAction = {
+  id: 'search-the-cold-hearth',
+  label: 'search the cold hearth',
+  cooldownSeconds: 4,
+  inGameMinutesPassed: 10,
+  repeatable: true,
+  visible: (state) => inChapter5(state) && flag(state, 'sawKitchenLedgerScratches'),
+  isDisabled: (state) => state.repetition.coldHearthSearchCount >= 2,
+  getDisabledReason: () => 'the hearth has no more cold marks to give.',
+  onExecute: (state) => {
+    const count = state.repetition.coldHearthSearchCount;
+    let newState = advanceTime({ ...state }, 10);
+
+    let text: string;
+    let entryType: 'story' | 'resource' = 'story';
+    if (count === 0) {
+      text =
+        'the hearth is cold, but the ash has been combed flat.\nsomeone smoothed it after the fire went out, leaving a clean rectangle at the center.';
+    } else {
+      text =
+        'beneath the flat ash, one black cinder keeps its shape.\nit is square-edged, papery, and cold enough to sting.\nyou take it before it can crumble.';
+      newState.resources = {
+        ...newState.resources,
+        hearthCinder: newState.resources.hearthCinder + 1,
+      };
+      newState = setFlag(newState, 'foundHearthCinder', true);
+      entryType = 'resource';
+    }
+
+    newState = addLogEntry(newState, text, entryType);
+    newState.repetition = {
+      ...newState.repetition,
+      coldHearthSearchCount: count + 1,
+    };
+    return { newState, logText: text };
+  },
+};
+
+const revealHouseLedgerMarkAction: GameAction = {
+  id: 'reveal-the-house-ledger-mark',
+  label: 'reveal the house ledger mark',
+  cooldownSeconds: 5,
+  inGameMinutesPassed: 15,
+  repeatable: false,
+  visible: (state) =>
+    inChapter5(state) &&
+    flag(state, 'niraDescribedLedgerVisitor') &&
+    flag(state, 'foundHearthCinder'),
+  isDisabled: (state) =>
+    state.resources.hearthCinder < 1 ||
+    state.resources.stitchedLedgerPage < 1 ||
+    flag(state, 'houseLedgerMarkRevealed'),
+  getDisabledReason: (state) => {
+    if (flag(state, 'houseLedgerMarkRevealed')) return 'the house mark is already visible.';
+    if (state.resources.hearthCinder < 1) return 'the cold hearth cinder is needed.';
+    return 'the stitched page is needed to compare the mark.';
+  },
+  onExecute: (state) => {
+    let newState = advanceTime({ ...state }, 15);
+    const text =
+      'you rub the cold cinder along the stitched page, then across the clean rectangle in the hearth ash.\nthe same mark appears in both places: not a name, but a place prepared for one.\n\nNira was not chosen by the cemetery.\nHer house was marked first.';
+
+    newState = addLogEntry(newState, text, 'danger');
+    newState = setFlag(newState, 'houseLedgerMarkRevealed', true);
+    newState = setFlag(newState, 'chapter5MiddleActive', true);
+    newState.resources = {
+      ...newState.resources,
+      houseLedgerMark: newState.resources.houseLedgerMark + 1,
+    };
+    newState.repetition = {
+      ...newState.repetition,
+      deadAttention: newState.repetition.deadAttention + 2,
+      whisperLevel: newState.repetition.whisperLevel + 1,
+    };
     return { newState, logText: text };
   },
 };
@@ -2450,6 +2599,10 @@ const ACTION_LIST: GameAction[] = [
   slideStitchedPageUnderDoorAction,
   teachNiraQuietNameAction,
   enterNirasHouseAction,
+  inspectNirasKitchenAction,
+  talkToNiraInsideAction,
+  searchColdHearthAction,
+  revealHouseLedgerMarkAction,
 ];
 
 export const gameActions: Record<string, GameAction> = Object.fromEntries(

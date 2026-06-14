@@ -170,10 +170,22 @@ export function ResourcePanel({ state }: ResourcePanelProps) {
   const niraHouseInspectCount = repetition.niraHouseInspectCount ?? 0;
   const niraDoorListenCount = repetition.niraDoorListenCount ?? 0;
   const niraMemoryListenCount = repetition.niraMemoryListenCount ?? 0;
+  const niraKitchenInspectCount = repetition.niraKitchenInspectCount ?? 0;
+  const niraInsideTalkCount = repetition.niraInsideTalkCount ?? 0;
+  const coldHearthSearchCount = repetition.coldHearthSearchCount ?? 0;
   const showNiraHouse = inChapter5 && niraHouseInspectCount > 0;
   const showNiraDoor = inChapter5 && niraDoorListenCount > 0;
   const showNiraMemory = inChapter5 && niraMemoryListenCount > 0;
-  const hasChapter5Observed = showNiraHouse || showNiraDoor || showNiraMemory;
+  const showNiraKitchen = inChapter5 && niraKitchenInspectCount > 0;
+  const showNiraInside = inChapter5 && niraInsideTalkCount > 0;
+  const showColdHearth = inChapter5 && coldHearthSearchCount > 0;
+  const hasChapter5Observed =
+    showNiraHouse ||
+    showNiraDoor ||
+    showNiraMemory ||
+    showNiraKitchen ||
+    showNiraInside ||
+    showColdHearth;
 
   const lightLabel = lanternLit ? 'lantern' : 'candle';
 
@@ -400,6 +412,30 @@ export function ResourcePanel({ state }: ResourcePanelProps) {
               </span>
             </div>
           )}
+          {showNiraKitchen && (
+            <div style={row}>
+              <span style={keyStyle}>Nira's kitchen</span>
+              <span style={{ ...valStyle, color: '#666666' }}>
+                inspected {niraKitchenInspectCount} / 2
+              </span>
+            </div>
+          )}
+          {showNiraInside && (
+            <div style={row}>
+              <span style={keyStyle}>Nira inside</span>
+              <span style={{ ...valStyle, color: '#666666' }}>
+                talked ×{niraInsideTalkCount}
+              </span>
+            </div>
+          )}
+          {showColdHearth && (
+            <div style={row}>
+              <span style={keyStyle}>cold hearth</span>
+              <span style={{ ...valStyle, color: '#666666' }}>
+                searched {coldHearthSearchCount} / 2
+              </span>
+            </div>
+          )}
         </>
       )}
     </div>
@@ -441,6 +477,8 @@ function formatResourceName(key: string): string {
     livingNameAnchor: 'living name anchor',
     thresholdAsh: 'threshold ash',
     niraFirstSound: 'Nira first sound',
+    hearthCinder: 'hearth cinder',
+    houseLedgerMark: 'house ledger mark',
   };
   return names[key] ?? key;
 }
