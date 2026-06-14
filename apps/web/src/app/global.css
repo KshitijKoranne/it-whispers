@@ -1,0 +1,262 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ─── It Whispers Design Tokens ──────────────────────────────── */
+:root {
+    --iw-bg:          #0c0c0c;
+    --iw-surface:     #111111;
+    --iw-panel:       #141414;
+    --iw-border:      #252525;
+    --iw-border-md:   #2e2e2e;
+    --iw-text:        #e2d9c8;
+    --iw-text-muted:  #555555;
+    --iw-text-dim:    #3a3a3a;
+    --iw-whisper:     #5e7380;
+    --iw-amber:       #c8922a;
+    --iw-amber-dim:   #1e1a10;
+    --iw-danger:      #6e1a1a;
+    --iw-danger-text: #a04040;
+
+    /*
+     * Font roles
+     * --font-title : inscriptional serif stack for grave-marker titles.
+     * --font-prose : literary serif stack for event log, body text, and UI.
+     *
+     * These are local/system stacks by design. Avoid next/font/google here so
+     * production builds do not depend on external font fetches.
+     */
+    --font-title: "Times New Roman", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    --font-prose: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+
+    /* shadcn defaults */
+    --background: hsl(0 0% 100%);
+    --foreground: hsl(240 10% 3.9%);
+    --card: hsl(0 0% 100%);
+    --card-foreground: hsl(240 10% 3.9%);
+    --popover: hsl(0 0% 100%);
+    --popover-foreground: hsl(240 10% 3.9%);
+    --primary: hsl(240 5.9% 10%);
+    --primary-foreground: hsl(0 0% 98%);
+    --secondary: hsl(240 4.8% 95.9%);
+    --secondary-foreground: hsl(240 5.9% 10%);
+    --muted: hsl(240 4.8% 95.9%);
+    --muted-foreground: hsl(240 3.8% 46.1%);
+    --accent: hsl(240 4.8% 95.9%);
+    --accent-foreground: hsl(240 5.9% 10%);
+    --destructive: hsl(0 84.2% 60.2%);
+    --destructive-foreground: hsl(0 0% 98%);
+    --border: hsl(240 5.9% 90%);
+    --input: hsl(240 5.9% 90%);
+    --ring: hsl(240 5.9% 10%);
+    --radius: 0.5rem;
+    --chart-1: hsl(12 76% 61%);
+    --chart-2: hsl(173 58% 39%);
+    --chart-3: hsl(197 37% 24%);
+    --chart-4: hsl(43 74% 66%);
+    --chart-5: hsl(27 87% 67%);
+    --sidebar: hsl(0 0% 98%);
+    --sidebar-foreground: hsl(240 5.3% 26.1%);
+    --sidebar-primary: hsl(240 5.9% 10%);
+    --sidebar-primary-foreground: hsl(0 0% 98%);
+    --sidebar-accent: hsl(240 4.8% 95.9%);
+    --sidebar-accent-foreground: hsl(240 5.9% 10%);
+    --sidebar-border: hsl(220 13% 91%);
+    --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+.dark {
+    --background: hsl(240 10% 3.9%);
+    --foreground: hsl(0 0% 98%);
+    --card: hsl(240 10% 3.9%);
+    --card-foreground: hsl(0 0% 98%);
+    --popover: hsl(240 10% 3.9%);
+    --popover-foreground: hsl(0 0% 98%);
+    --primary: hsl(0 0% 98%);
+    --primary-foreground: hsl(240 5.9% 10%);
+    --secondary: hsl(240 3.7% 15.9%);
+    --secondary-foreground: hsl(0 0% 98%);
+    --muted: hsl(240 3.7% 15.9%);
+    --muted-foreground: hsl(240 5% 64.9%);
+    --accent: hsl(240 3.7% 15.9%);
+    --accent-foreground: hsl(0 0% 98%);
+    --destructive: hsl(0 62.8% 30.6%);
+    --destructive-foreground: hsl(0 0% 98%);
+    --border: hsl(240 3.7% 15.9%);
+    --input: hsl(240 3.7% 15.9%);
+    --ring: hsl(240 4.9% 83.9%);
+    --chart-1: hsl(220 70% 50%);
+    --chart-2: hsl(160 60% 45%);
+    --chart-3: hsl(30 80% 55%);
+    --chart-4: hsl(280 65% 60%);
+    --chart-5: hsl(340 75% 55%);
+    --sidebar: hsl(240 5.9% 10%);
+    --sidebar-foreground: hsl(240 4.8% 95.9%);
+    --sidebar-primary: hsl(224.3 76.3% 48%);
+    --sidebar-primary-foreground: hsl(0 0% 100%);
+    --sidebar-accent: hsl(240 3.7% 15.9%);
+    --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+    --sidebar-border: hsl(240 3.7% 15.9%);
+    --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+@theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    body {
+        background: #0c0c0c;
+        color: #e2d9c8;
+        font-family: var(--font-prose);
+    }
+}
+
+/* ─── Custom Scrollbar ───────────────────────────────────────── */
+.iw-scroll::-webkit-scrollbar {
+    width: 3px;
+}
+.iw-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+.iw-scroll::-webkit-scrollbar-thumb {
+    background: #252525;
+    border-radius: 2px;
+}
+.iw-scroll::-webkit-scrollbar-thumb:hover {
+    background: #3d3d3d;
+}
+
+/* ─── Grain Texture Overlay ──────────────────────────────────── */
+.iw-grain-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    background-repeat: repeat;
+}
+
+/* ─── Vignette Overlay ───────────────────────────────────────── */
+.iw-vignette-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9997;
+    background: radial-gradient(ellipse at 50% 35%, transparent 35%, rgba(0, 0, 0, 0.58) 100%);
+}
+
+/* ─── Log Entry Fade-In ──────────────────────────────────────── */
+@keyframes iw-entry-in {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.iw-entry-in {
+    animation: iw-entry-in 0.45s ease forwards;
+}
+
+/* ─── Candle Flicker ─────────────────────────────────────────── */
+@keyframes iw-flicker {
+    0%,  100% { opacity: 1;    }
+    20%        { opacity: 0.88; }
+    40%        { opacity: 0.96; }
+    60%        { opacity: 0.82; }
+    80%        { opacity: 0.93; }
+}
+.iw-flicker {
+    animation: iw-flicker 4s ease-in-out infinite;
+}
+
+/* ─── Action Button ──────────────────────────────────────────── */
+.iw-btn {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #111111;
+    border: 1px solid #2a2a2a;
+    color: #c8bfaf;
+    font-family: var(--font-prose);
+    font-size: 0.8125rem;
+    letter-spacing: 0.07em;
+    padding: 0.55rem 1.2rem;
+    cursor: pointer;
+    transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+    min-width: 7rem;
+    min-height: 2.5rem;
+    user-select: none;
+    -webkit-user-select: none;
+    text-transform: lowercase;
+}
+.iw-btn:hover:not(:disabled) {
+    background: #181818;
+    border-color: #3a3a3a;
+    color: #e2d9c8;
+}
+.iw-btn:active:not(:disabled) {
+    background: #0e0e0e;
+}
+.iw-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+    color: #444444;
+    border-color: #1c1c1c;
+}
+
+/* Progress fill — amber tint sweeps left to right */
+.iw-btn-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background: rgba(200, 146, 42, 0.11);
+    pointer-events: none;
+    transition: none;
+}
