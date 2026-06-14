@@ -94,6 +94,24 @@ function bindUnwrittenPage(state = collectAshBasinClues()): GameState {
   return findAction(state, 'bind-unwritten-page').onExecute(state).newState;
 }
 
+function readStitchedPage(state = bindUnwrittenPage()): GameState {
+  return findAction(state, 'read-stitched-page').onExecute(state).newState;
+}
+
+function hearLivingTrace(state = readStitchedPage()): GameState {
+  const listen = findAction(state, 'listen-to-living-trace');
+  const firstListen = listen.onExecute(state).newState;
+  return listen.onExecute(firstListen).newState;
+}
+
+function anchorLivingTrace(state = hearLivingTrace()): GameState {
+  return findAction(state, 'anchor-the-living-trace').onExecute(state).newState;
+}
+
+function completeChapter4(state = anchorLivingTrace()): GameState {
+  return findAction(state, 'follow-the-living-trace').onExecute(state).newState;
+}
+
 function enterChapter3(): GameState {
   const chapter2Complete = {
     ...completeFirstArc(),
@@ -597,5 +615,70 @@ describe('Chapter 4 transition', () => {
     expect(revealed.repetition.whisperLevel).toBe(bound.repetition.whisperLevel + 1);
     expect(revealed.player.courage).toBe(bound.player.courage - 1);
     expect(read.isDisabled?.(revealed)).toBe(true);
+  });
+
+  it('does not offer the Chapter 4 ending bridge before Nira is revealed', () => {
+    const bound = bindUnwrittenPage();
+    const visibleIds = getVisibleActions(bound).map((action) => action.id);
+
+    expect(visibleIds).not.toContain('listen-to-living-trace');
+    expect(visibleIds).not.toContain('anchor-the-living-trace');
+    expect(visibleIds).not.toContain('follow-the-living-trace');
+    expect(visibleIds).not.toContain('take-the-service-path');
+  });
+
+  it('requires listening to the living trace before it can be anchored', () => {
+    const revealed = readStitchedPage();
+    const listen = findAction(revealed, 'listen-to-living-trace');
+
+    const firstListen = listen.onExecute(revealed).newState;
+    expect(firstListen.flags.niraTraceHeard).not.toBe(true);
+    expect(getVisibleActions(firstListen).some((action) => action.id === 'anchor-the-living-trace')).toBe(false);
+
+    const secondListen = listen.onExecute(firstListen).newState;
+    const anchor = findAction(secondListen, 'anchor-the-living-trace');
+
+    expect(secondListen.flags.niraTraceHeard).toBe(true);
+    expect(secondListen.repetition.livingTraceListenCount).toBe(2);
+    expect(anchor.isDisabled?.(secondListen)).toBe(false);
+  });
+
+  it('anchors Nira without spending the stitched page or living trace', () => {
+    const heard = hearLivingTrace();
+    const anchor = findAction(heard, 'anchor-the-living-trace');
+    const anchored = anchor.onExecute(heard).newState;
+
+    expect(anchored.flags.niraTraceAnchored).toBe(true);
+    expect(anchored.resources.stitchedLedgerPage).toBe(1);
+    expect(anchored.resources.livingNameTrace).toBe(1);
+    expect(anchored.resources.livingNameAnchor).toBe(1);
+    expect(anchored.player.courage).toBe(Math.min(heard.player.courage + 1, heard.player.maxCourage));
+    expect(anchor.isDisabled?.(anchored)).toBe(true);
+  });
+
+  it('does not unlock Chapter 5 until Chapter 4 is completed through the living trace', () => {
+    const anchored = anchorLivingTrace();
+
+    expect(getVisibleActions(anchored).some((action) => action.id === 'take-the-service-path')).toBe(false);
+
+    const follow = findAction(anchored, 'follow-the-living-trace');
+    const completed = follow.onExecute(anchored).newState;
+
+    expect(completed.chapter).toBe('Chapter 4 — Complete');
+    expect(completed.currentLocation).toBe('Cemetery Boundary');
+    expect(completed.flags.chapter4Complete).toBe(true);
+    expect(completed.flags.chapter5Unlocked).toBe(true);
+    expect(getVisibleActions(completed).some((action) => action.id === 'take-the-service-path')).toBe(true);
+  });
+
+  it('starts Chapter 5 only from the anchored cemetery boundary path', () => {
+    const completed = completeChapter4();
+    const enter = findAction(completed, 'take-the-service-path');
+    const chapter5 = enter.onExecute(completed).newState;
+
+    expect(chapter5.chapter).toBe('Chapter 5');
+    expect(chapter5.currentLocation).toBe("Nira's House");
+    expect(chapter5.flags.chapter5Active).toBe(true);
+    expect(getVisibleActions(chapter5).some((action) => action.id === 'take-the-service-path')).toBe(false);
   });
 });

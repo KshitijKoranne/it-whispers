@@ -1986,6 +1986,142 @@ const readStitchedPageAction: GameAction = {
   },
 };
 
+const listenToLivingTraceAction: GameAction = {
+  id: 'listen-to-living-trace',
+  label: 'listen to the living trace',
+  cooldownSeconds: 5,
+  inGameMinutesPassed: 10,
+  repeatable: true,
+  visible: (state) =>
+    inChapter4(state) &&
+    flag(state, 'revealedNiraLivingName') &&
+    !flag(state, 'niraTraceHeard'),
+  isDisabled: (state) =>
+    state.resources.livingNameTrace < 1 || state.repetition.livingTraceListenCount >= 2,
+  getDisabledReason: (state) => {
+    if (state.resources.livingNameTrace < 1) return 'there is no living trace to follow.';
+    return 'the living trace has given its direction.';
+  },
+  onExecute: (state) => {
+    const count = state.repetition.livingTraceListenCount;
+    let newState = advanceTime({ ...state }, 10);
+
+    const text =
+      count === 0
+        ? 'you hold still with NIRA written backward in your thoughts.\nthe trace does not whisper like the dead.\nit beats.\nsmall. frightened. alive.'
+        : 'the living trace pulls toward the cemetery boundary.\nnot toward a grave.\nnot toward the shed.\ntoward the old service path beyond the wall, where someone living is already being measured for absence.';
+
+    newState = addLogEntry(newState, text, count === 0 ? 'whisper' : 'danger');
+    newState.repetition = {
+      ...newState.repetition,
+      livingTraceListenCount: count + 1,
+      whisperLevel: newState.repetition.whisperLevel + 1,
+    };
+
+    if (count === 1) {
+      newState = setFlag(newState, 'niraTraceHeard', true);
+    }
+
+    return { newState, logText: text };
+  },
+};
+
+const anchorLivingTraceAction: GameAction = {
+  id: 'anchor-the-living-trace',
+  label: 'anchor the living trace',
+  cooldownSeconds: 5,
+  inGameMinutesPassed: 15,
+  repeatable: false,
+  visible: (state) => inChapter4(state) && flag(state, 'niraTraceHeard'),
+  isDisabled: (state) =>
+    state.resources.stitchedLedgerPage < 1 ||
+    state.resources.livingNameTrace < 1 ||
+    flag(state, 'niraTraceAnchored'),
+  getDisabledReason: (state) => {
+    if (flag(state, 'niraTraceAnchored')) return 'Nira has already been anchored against the ledger.';
+    if (state.resources.stitchedLedgerPage < 1) return 'the stitched page must hold the trace.';
+    return 'there is no living trace to anchor.';
+  },
+  onExecute: (state) => {
+    let newState = advanceTime({ ...state }, 15);
+    const branchLine = flag(state, 'maraNameCleansed')
+      ? 'the place where MARA burned away answers with heat under your palm.'
+      : flag(state, 'leftMaraUnmarked')
+        ? 'the folded MARA rubbings twitch once, then lie still.'
+        : 'the warded stone behind you keeps its black-salt circle.';
+    const text = `${branchLine}\nyou press the stitched page flat and set the living trace across its first blank line.\nthe ink tries to pull NIRA deeper.\nyou pin it with the only thing the ledger cannot fake: the rhythm of a living name refusing to become an entry.`;
+
+    newState = addLogEntry(newState, text, 'whisper');
+    newState = setFlag(newState, 'niraTraceAnchored', true);
+    newState.resources = {
+      ...newState.resources,
+      livingNameAnchor: newState.resources.livingNameAnchor + 1,
+    };
+    newState.repetition = {
+      ...newState.repetition,
+      deadAttention: newState.repetition.deadAttention + 1,
+    };
+    newState.player = {
+      ...newState.player,
+      courage: clamp(newState.player.courage + 1, 0, newState.player.maxCourage),
+    };
+
+    return { newState, logText: text };
+  },
+};
+
+const followLivingTraceAction: GameAction = {
+  id: 'follow-the-living-trace',
+  label: 'follow the living trace',
+  cooldownSeconds: 5,
+  inGameMinutesPassed: 20,
+  repeatable: false,
+  visible: (state) => inChapter4(state) && flag(state, 'niraTraceAnchored'),
+  isDisabled: (state) => state.resources.livingNameAnchor < 1 || flag(state, 'chapter4Complete'),
+  getDisabledReason: (state) => {
+    if (flag(state, 'chapter4Complete')) return 'you have already left the nameless row.';
+    return 'Nira is not anchored strongly enough to follow.';
+  },
+  onExecute: (state) => {
+    let newState = advanceTime({ ...state }, 20);
+    const text =
+      'you follow the anchored trace between plots that were prepared before their dead arrived.\nat the cemetery boundary, the wall has no gate.\nonly a service path, half-swallowed by nettles, leading toward a house whose windows are still lit.\n\nChapter 4 complete.\nNira is alive.\nThe ledger has already made room for her.';
+
+    newState.currentLocation = 'Cemetery Boundary';
+    newState.chapter = 'Chapter 4 — Complete';
+    newState = setFlag(newState, 'chapter4Complete', true);
+    newState = setFlag(newState, 'chapter5Unlocked', true);
+    newState = addLogEntry(newState, text, 'story');
+
+    return { newState, logText: text };
+  },
+};
+
+const takeServicePathAction: GameAction = {
+  id: 'take-the-service-path',
+  label: 'take the service path',
+  cooldownSeconds: 5,
+  inGameMinutesPassed: 15,
+  repeatable: false,
+  visible: (state) => flag(state, 'chapter4Complete') && !flag(state, 'chapter5Active'),
+  isDisabled: (state) => !flag(state, 'chapter5Unlocked') || state.resources.livingNameAnchor < 1,
+  getDisabledReason: (state) => {
+    if (!flag(state, 'chapter5Unlocked')) return 'the boundary path is not known yet.';
+    return 'Nira needs an anchor before the cemetery can be left.';
+  },
+  onExecute: (state) => {
+    let newState = advanceTime({ ...state }, 15);
+    const text =
+      'the cemetery does not end cleanly.\nit thins.\ngrass becomes road-dust. headstones become fenceposts. whispers become the low voice of a sleeping town.\n\nAhead, the lit house waits with Nira inside it.\nChapter 5 begins.';
+
+    newState.currentLocation = "Nira's House";
+    newState.chapter = 'Chapter 5';
+    newState = setFlag(newState, 'chapter5Active', true);
+    newState = addLogEntry(newState, text, 'story');
+    return { newState, logText: text };
+  },
+};
+
 // ─── Action Registry (ordered) ────────────────────────────────────────────────
 
 const ACTION_LIST: GameAction[] = [
@@ -2045,6 +2181,11 @@ const ACTION_LIST: GameAction[] = [
   searchAshBasinAction,
   bindUnwrittenPageAction,
   readStitchedPageAction,
+  listenToLivingTraceAction,
+  anchorLivingTraceAction,
+  followLivingTraceAction,
+  // Chapter 4→5 transition
+  takeServicePathAction,
 ];
 
 export const gameActions: Record<string, GameAction> = Object.fromEntries(

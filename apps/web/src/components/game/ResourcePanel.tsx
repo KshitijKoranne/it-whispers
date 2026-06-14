@@ -150,13 +150,20 @@ export function ResourcePanel({ state }: ResourcePanelProps) {
   const blackSaltWardStrength = repetition.blackSaltWardStrength ?? 0;
   const uncarvedPlotInspectCount = repetition.uncarvedPlotInspectCount ?? 0;
   const ashBasinSearchCount = repetition.ashBasinSearchCount ?? 0;
+  const livingTraceListenCount = repetition.livingTraceListenCount ?? 0;
   const showBlankStoneTrace = inChapter4 && blankStoneTraceProgress > 0 && blankStoneTraceProgress < 3;
   const showNamelessListen = inChapter4 && namelessRowListenCount > 0;
   const showBlackSaltWard = inChapter4 && blackSaltWardStrength > 0;
   const showUncarvedPlot = inChapter4 && uncarvedPlotInspectCount > 0;
   const showAshBasin = inChapter4 && ashBasinSearchCount > 0;
+  const showLivingTrace = inChapter4 && livingTraceListenCount > 0;
   const hasChapter4Observed =
-    showBlankStoneTrace || showNamelessListen || showBlackSaltWard || showUncarvedPlot || showAshBasin;
+    showBlankStoneTrace ||
+    showNamelessListen ||
+    showBlackSaltWard ||
+    showUncarvedPlot ||
+    showAshBasin ||
+    showLivingTrace;
 
   const lightLabel = lanternLit ? 'lantern' : 'candle';
 
@@ -343,6 +350,14 @@ export function ResourcePanel({ state }: ResourcePanelProps) {
               <span style={{ ...valStyle, color: '#666666' }}>searched ×{ashBasinSearchCount}</span>
             </div>
           )}
+          {showLivingTrace && (
+            <div style={row}>
+              <span style={keyStyle}>living trace</span>
+              <span style={{ ...valStyle, color: '#666666' }}>
+                listened ×{livingTraceListenCount}
+              </span>
+            </div>
+          )}
         </>
       )}
     </div>
@@ -381,6 +396,7 @@ function formatResourceName(key: string): string {
     unwrittenLedgerPage: 'unwritten ledger page',
     stitchedLedgerPage: 'stitched ledger page',
     livingNameTrace: 'living name trace',
+    livingNameAnchor: 'living name anchor',
   };
   return names[key] ?? key;
 }

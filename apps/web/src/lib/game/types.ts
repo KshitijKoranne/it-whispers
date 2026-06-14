@@ -49,6 +49,7 @@ export interface Resources {
   unwrittenLedgerPage: number;
   stitchedLedgerPage: number;
   livingNameTrace: number;
+  livingNameAnchor: number;
 }
 
 export interface Tools {
@@ -83,6 +84,7 @@ export interface RepetitionVariables {
   blackSaltWardStrength: number;
   uncarvedPlotInspectCount: number;
   ashBasinSearchCount: number;
+  livingTraceListenCount: number;
 }
 
 export interface CombatState {

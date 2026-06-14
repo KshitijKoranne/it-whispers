@@ -40,6 +40,7 @@ export function createInitialGameState(): GameState {
       unwrittenLedgerPage: 0,
       stitchedLedgerPage: 0,
       livingNameTrace: 0,
+      livingNameAnchor: 0,
     },
     tools: {
       hasLantern: false,
@@ -91,6 +92,7 @@ export function createInitialGameState(): GameState {
       blackSaltWardStrength: 0,
       uncarvedPlotInspectCount: 0,
       ashBasinSearchCount: 0,
+      livingTraceListenCount: 0,
     },
     settings: {
       sound: true,
