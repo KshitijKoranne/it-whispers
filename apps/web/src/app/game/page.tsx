@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, Suspense } from 'react';
+import { useCallback, useEffect, useRef, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { GameState } from '@/lib/game/types';
 import { createInitialGameState, addLogEntry, tickAfterAction } from '@/lib/game/state';
@@ -104,6 +104,74 @@ function ComingSoonPanel() {
   );
 }
 
+const AUDIO_ASSETS = {
+  action: '/assets/audio/action-stone-click.wav',
+  candle: '/assets/audio/candle-flame-loop.wav',
+  whisper: '/assets/audio/whisper-sting.wav',
+  wind: '/assets/audio/cemetery-wind-loop.wav',
+} as const;
+
+const CHAPTER_VISUALS = {
+  chapter1: {
+    src: '/assets/visuals/chapter-1-first-grave.png',
+    label: 'the first grave waits under candlelight',
+  },
+  chapter2: {
+    src: '/assets/visuals/chapter-2-keepers-shed.png',
+    label: "the keeper's shed breathes in the dark",
+  },
+  chapter3: {
+    src: '/assets/visuals/chapter-3-cemetery-gate.png',
+    label: 'fresh soil leads past the cemetery gate',
+  },
+} as const;
+
+function getChapterVisual(state: GameState) {
+  if (state.flags['chapter3Active']) return CHAPTER_VISUALS.chapter3;
+  if (state.flags['chapter2Active']) return CHAPTER_VISUALS.chapter2;
+  return CHAPTER_VISUALS.chapter1;
+}
+
+function ChapterVisual({ state }: { state: GameState }) {
+  const visual = getChapterVisual(state);
+
+  return (
+    <figure
+      style={{
+        margin: 0,
+        border: '1px solid #1c1c1c',
+        background: '#070707',
+        overflow: 'hidden',
+      }}
+    >
+      <div
+        style={{
+          minHeight: 'clamp(10rem, 28vw, 18rem)',
+          backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.58)), url('${visual.src}')`,
+          backgroundPosition: 'center',
+          backgroundSize: 'cover',
+          position: 'relative',
+        }}
+        role="img"
+        aria-label={visual.label}
+      />
+      <figcaption
+        style={{
+          borderTop: '1px solid #161616',
+          color: '#59524a',
+          fontSize: '0.72rem',
+          letterSpacing: '0.16em',
+          lineHeight: 1.6,
+          padding: '0.65rem 0.8rem',
+          textTransform: 'uppercase',
+        }}
+      >
+        {visual.label}
+      </figcaption>
+    </figure>
+  );
+}
+
 function GamePageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -117,6 +185,18 @@ function GamePageContent() {
   // ID of the log entry currently being streamed; null = idle
   const [streamingEntryId, setStreamingEntryId] = useState<string | null>(null);
   const isStreaming = streamingEntryId !== null;
+  const audioUnlockedRef = useRef(false);
+  const audioRef = useRef<{
+    action: HTMLAudioElement | null;
+    candle: HTMLAudioElement | null;
+    whisper: HTMLAudioElement | null;
+    wind: HTMLAudioElement | null;
+  }>({
+    action: null,
+    candle: null,
+    whisper: null,
+    wind: null,
+  });
 
   // Responsive breakpoint detection
   useEffect(() => {
@@ -154,6 +234,77 @@ function GamePageContent() {
     }
   }, [isNewGame, router]);
 
+  useEffect(() => {
+    const wind = new Audio(AUDIO_ASSETS.wind);
+    const candle = new Audio(AUDIO_ASSETS.candle);
+    const action = new Audio(AUDIO_ASSETS.action);
+    const whisper = new Audio(AUDIO_ASSETS.whisper);
+
+    wind.loop = true;
+    wind.volume = 0.18;
+    candle.loop = true;
+    candle.volume = 0.14;
+    action.volume = 0.36;
+    whisper.volume = 0.28;
+
+    audioRef.current = { action, candle, whisper, wind };
+
+    return () => {
+      Object.values(audioRef.current).forEach((audio) => {
+        if (!audio) return;
+        audio.pause();
+        audio.src = '';
+      });
+    };
+  }, []);
+
+  const syncAmbientAudio = useCallback((state: GameState | null) => {
+    const { candle, wind } = audioRef.current;
+    if (!state || !audioUnlockedRef.current || !state.settings.sound) {
+      candle?.pause();
+      wind?.pause();
+      return;
+    }
+
+    if (state.settings.music) {
+      void wind?.play().catch(() => {});
+    } else {
+      wind?.pause();
+    }
+
+    if (state.lightSystem.lightLevel > 0) {
+      void candle?.play().catch(() => {});
+    } else {
+      candle?.pause();
+    }
+  }, []);
+
+  useEffect(() => {
+    syncAmbientAudio(gameState);
+  }, [
+    gameState,
+    gameState?.settings.sound,
+    gameState?.settings.music,
+    gameState?.lightSystem.lightLevel,
+    syncAmbientAudio,
+  ]);
+
+  const unlockAudio = useCallback(() => {
+    audioUnlockedRef.current = true;
+    syncAmbientAudio(gameState);
+  }, [gameState, syncAmbientAudio]);
+
+  const playAudioCue = useCallback(
+    (cue: 'action' | 'whisper') => {
+      if (!gameState?.settings.sound || !audioUnlockedRef.current) return;
+      const audio = audioRef.current[cue];
+      if (!audio) return;
+      audio.currentTime = 0;
+      void audio.play().catch(() => {});
+    },
+    [gameState?.settings.sound]
+  );
+
   const handleSaveGame = (state: GameState) => {
     saveGame(state);
     setShowSaveIndicator(true);
@@ -168,6 +319,8 @@ function GamePageContent() {
     if (!action) return;
     // Guard against externally-disabled actions executing
     if (action.isDisabled && action.isDisabled(gameState)) return;
+    unlockAudio();
+    playAudioCue('action');
     const { newState: afterAction } = action.onExecute(gameState);
     const ticked = tickAfterAction(afterAction);
     // Identify the newest log entry to stream
@@ -176,7 +329,11 @@ function GamePageContent() {
     handleSaveGame(ticked);
     if (newestEntry) {
       setStreamingEntryId(newestEntry.id);
+      if (newestEntry.type === 'whisper' || newestEntry.type === 'danger') {
+        playAudioCue('whisper');
+      }
     }
+    syncAmbientAudio(ticked);
   };
 
   const handleSettingsChange = (newSettings: GameState['settings']) => {
@@ -185,6 +342,7 @@ function GamePageContent() {
     setGameState(updated);
     handleSaveGame(updated);
     localStorage.setItem('it-whispers-settings', JSON.stringify(newSettings));
+    syncAmbientAudio(updated);
   };
 
   const handleResetSave = () => {
@@ -323,6 +481,8 @@ function GamePageContent() {
                 background: 'linear-gradient(to right, #1c1c1c 60%, transparent)',
               }}
             />
+
+            <ChapterVisual state={gameState} />
 
             {/* Event log */}
             <div

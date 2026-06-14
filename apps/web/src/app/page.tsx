@@ -62,7 +62,11 @@ export default function HomePage() {
     <div
       style={{
         minHeight: '100vh',
-        background: '#0c0c0c',
+        backgroundColor: '#0c0c0c',
+        backgroundImage:
+          "linear-gradient(90deg, rgba(12,12,12,0.98) 0%, rgba(12,12,12,0.9) 34%, rgba(12,12,12,0.58) 100%), url('/assets/visuals/key-art-cemetery.png')",
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -97,7 +101,16 @@ export default function HomePage() {
         }}
       />
 
-      <div style={{ maxWidth: '22rem', width: '100%', position: 'relative', zIndex: 1 }}>
+      <div
+        style={{
+          maxWidth: '22rem',
+          width: '100%',
+          position: 'relative',
+          zIndex: 1,
+          marginRight: 'auto',
+          marginLeft: 'clamp(0rem, 8vw, 7rem)',
+        }}
+      >
         {/* Title block */}
         <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
           <div
