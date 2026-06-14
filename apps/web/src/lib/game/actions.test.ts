@@ -112,6 +112,26 @@ function completeChapter4(state = anchorLivingTrace()): GameState {
   return findAction(state, 'follow-the-living-trace').onExecute(state).newState;
 }
 
+function enterChapter5(state = completeChapter4()): GameState {
+  return findAction(state, 'take-the-service-path').onExecute(state).newState;
+}
+
+function inspectNirasHouse(state = enterChapter5()): GameState {
+  const inspect = findAction(state, 'inspect-niras-house');
+  const firstInspect = inspect.onExecute(state).newState;
+  return inspect.onExecute(firstInspect).newState;
+}
+
+function hearNiraInside(state = inspectNirasHouse()): GameState {
+  const listen = findAction(state, 'listen-at-niras-door');
+  const firstListen = listen.onExecute(state).newState;
+  return listen.onExecute(firstListen).newState;
+}
+
+function wardNirasThreshold(state = hearNiraInside()): GameState {
+  return findAction(state, 'dust-niras-threshold').onExecute(state).newState;
+}
+
 function enterChapter3(): GameState {
   const chapter2Complete = {
     ...completeFirstArc(),
@@ -680,5 +700,84 @@ describe('Chapter 4 transition', () => {
     expect(chapter5.currentLocation).toBe("Nira's House");
     expect(chapter5.flags.chapter5Active).toBe(true);
     expect(getVisibleActions(chapter5).some((action) => action.id === 'take-the-service-path')).toBe(false);
+  });
+
+  it('starts Chapter 5 at Nira house with only inspection available first', () => {
+    const chapter5 = enterChapter5();
+    const visibleIds = getVisibleActions(chapter5).map((action) => action.id);
+
+    expect(visibleIds).toContain('inspect-niras-house');
+    expect(visibleIds).not.toContain('listen-at-niras-door');
+    expect(visibleIds).not.toContain('dust-niras-threshold');
+    expect(visibleIds).not.toContain('call-nira-softly');
+  });
+
+  it('unlocks Nira door listening only after the house window is seen', () => {
+    const chapter5 = enterChapter5();
+    const inspect = findAction(chapter5, 'inspect-niras-house');
+    const firstInspect = inspect.onExecute(chapter5).newState;
+
+    expect(firstInspect.flags.sawNiraWindow).toBe(true);
+    expect(getVisibleActions(firstInspect).some((action) => action.id === 'listen-at-niras-door')).toBe(true);
+
+    const secondInspect = inspect.onExecute(firstInspect).newState;
+    expect(secondInspect.resources.thresholdAsh).toBe(1);
+    expect(secondInspect.flags.foundNiraThresholdAsh).toBe(true);
+    expect(inspect.isDisabled?.(secondInspect)).toBe(true);
+  });
+
+  it('requires hearing Nira inside before the threshold can be warded', () => {
+    const inspected = inspectNirasHouse();
+    const visibleIds = getVisibleActions(inspected).map((action) => action.id);
+
+    expect(visibleIds).toContain('listen-at-niras-door');
+    expect(visibleIds).not.toContain('dust-niras-threshold');
+
+    const heard = hearNiraInside(inspected);
+    const ward = findAction(heard, 'dust-niras-threshold');
+
+    expect(heard.flags.heardNiraInside).toBe(true);
+    expect(heard.repetition.niraDoorListenCount).toBe(2);
+    expect(ward.isDisabled?.(heard)).toBe(false);
+  });
+
+  it('does not ward Nira threshold without the living-name anchor and threshold ash', () => {
+    const heard = hearNiraInside();
+    const ward = findAction(heard, 'dust-niras-threshold');
+
+    const noAsh = {
+      ...heard,
+      resources: { ...heard.resources, thresholdAsh: 0 },
+    };
+    expect(ward.isDisabled?.(noAsh)).toBe(true);
+    expect(ward.getDisabledReason?.(noAsh)).toBe('the threshold ash has not been found.');
+
+    const noAnchor = {
+      ...heard,
+      resources: { ...heard.resources, livingNameAnchor: 0 },
+    };
+    expect(ward.isDisabled?.(noAnchor)).toBe(true);
+    expect(ward.getDisabledReason?.(noAnchor)).toBe('the living-name anchor is needed here.');
+  });
+
+  it('wards the threshold before Nira can safely answer', () => {
+    const heard = hearNiraInside();
+    expect(getVisibleActions(heard).some((action) => action.id === 'call-nira-softly')).toBe(false);
+
+    const warded = wardNirasThreshold(heard);
+    expect(warded.flags.niraThresholdWarded).toBe(true);
+    expect(warded.resources.thresholdAsh).toBe(0);
+    expect(getVisibleActions(warded).some((action) => action.id === 'call-nira-softly')).toBe(true);
+  });
+
+  it('makes first contact with Nira after the threshold is warded', () => {
+    const warded = wardNirasThreshold();
+    const call = findAction(warded, 'call-nira-softly');
+    const answered = call.onExecute(warded).newState;
+
+    expect(answered.flags.niraAnsweredFromInside).toBe(true);
+    expect(answered.flags.chapter5FirstContact).toBe(true);
+    expect(answered.player.courage).toBe(Math.min(warded.player.courage + 1, warded.player.maxCourage));
+    expect(call.isDisabled?.(answered)).toBe(true);
   });
 });

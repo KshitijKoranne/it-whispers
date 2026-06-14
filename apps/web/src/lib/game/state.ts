@@ -41,6 +41,7 @@ export function createInitialGameState(): GameState {
       stitchedLedgerPage: 0,
       livingNameTrace: 0,
       livingNameAnchor: 0,
+      thresholdAsh: 0,
     },
     tools: {
       hasLantern: false,
@@ -93,6 +94,8 @@ export function createInitialGameState(): GameState {
       uncarvedPlotInspectCount: 0,
       ashBasinSearchCount: 0,
       livingTraceListenCount: 0,
+      niraHouseInspectCount: 0,
+      niraDoorListenCount: 0,
     },
     settings: {
       sound: true,

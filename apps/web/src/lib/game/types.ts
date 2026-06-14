@@ -50,6 +50,7 @@ export interface Resources {
   stitchedLedgerPage: number;
   livingNameTrace: number;
   livingNameAnchor: number;
+  thresholdAsh: number;
 }
 
 export interface Tools {
@@ -85,6 +86,8 @@ export interface RepetitionVariables {
   uncarvedPlotInspectCount: number;
   ashBasinSearchCount: number;
   livingTraceListenCount: number;
+  niraHouseInspectCount: number;
+  niraDoorListenCount: number;
 }
 
 export interface CombatState {

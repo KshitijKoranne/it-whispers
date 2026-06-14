@@ -165,6 +165,14 @@ export function ResourcePanel({ state }: ResourcePanelProps) {
     showAshBasin ||
     showLivingTrace;
 
+  // Chapter 5 observed
+  const inChapter5 = flags['chapter5Active'] === true && !flags['chapter5Complete'];
+  const niraHouseInspectCount = repetition.niraHouseInspectCount ?? 0;
+  const niraDoorListenCount = repetition.niraDoorListenCount ?? 0;
+  const showNiraHouse = inChapter5 && niraHouseInspectCount > 0;
+  const showNiraDoor = inChapter5 && niraDoorListenCount > 0;
+  const hasChapter5Observed = showNiraHouse || showNiraDoor;
+
   const lightLabel = lanternLit ? 'lantern' : 'candle';
 
   return (
@@ -360,6 +368,30 @@ export function ResourcePanel({ state }: ResourcePanelProps) {
           )}
         </>
       )}
+
+      {/* Observed: Chapter 5 */}
+      {hasChapter5Observed && (
+        <>
+          <div style={divider} />
+          <div style={{ ...sectionLabel, marginBottom: '0.8rem' }}>observed</div>
+          {showNiraHouse && (
+            <div style={row}>
+              <span style={keyStyle}>Nira's house</span>
+              <span style={{ ...valStyle, color: '#666666' }}>
+                inspected {niraHouseInspectCount} / 2
+              </span>
+            </div>
+          )}
+          {showNiraDoor && (
+            <div style={row}>
+              <span style={keyStyle}>Nira's door</span>
+              <span style={{ ...valStyle, color: '#666666' }}>
+                listened ×{niraDoorListenCount}
+              </span>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
@@ -397,6 +429,7 @@ function formatResourceName(key: string): string {
     stitchedLedgerPage: 'stitched ledger page',
     livingNameTrace: 'living name trace',
     livingNameAnchor: 'living name anchor',
+    thresholdAsh: 'threshold ash',
   };
   return names[key] ?? key;
 }

@@ -1128,6 +1128,10 @@ function inChapter4(state: GameState): boolean {
   return flag(state, 'chapter4Active') && !flag(state, 'chapter4Complete');
 }
 
+function inChapter5(state: GameState): boolean {
+  return flag(state, 'chapter5Active') && !flag(state, 'chapter5Complete');
+}
+
 // ─── CH3-1. INSPECT FRESH SOIL ───────────────────────────────────────────────
 
 const inspectFreshSoilAction: GameAction = {
@@ -2122,6 +2126,138 @@ const takeServicePathAction: GameAction = {
   },
 };
 
+const inspectNirasHouseAction: GameAction = {
+  id: 'inspect-niras-house',
+  label: "inspect Nira's house",
+  cooldownSeconds: 4,
+  inGameMinutesPassed: 10,
+  repeatable: true,
+  visible: inChapter5,
+  isDisabled: (state) => state.repetition.niraHouseInspectCount >= 2,
+  getDisabledReason: () => 'the house has shown what it can from outside.',
+  onExecute: (state) => {
+    const count = state.repetition.niraHouseInspectCount;
+    let newState = advanceTime({ ...state }, 10);
+
+    let text: string;
+    let entryType: 'story' | 'resource' = 'story';
+    if (count === 0) {
+      text =
+        "Nira's house is narrow and awake.\none upstairs window burns yellow.\nno figure crosses it, but the curtain moves once, against the wind.";
+      newState = setFlag(newState, 'sawNiraWindow', true);
+    } else {
+      text =
+        'the doorstep is dusted with pale ash.\nnot fireplace ash.\nthe same white ash that hid the unwritten page, scattered here in a careful line.\nyou gather enough to mark the threshold again.';
+      newState.resources = {
+        ...newState.resources,
+        thresholdAsh: newState.resources.thresholdAsh + 1,
+      };
+      newState = setFlag(newState, 'foundNiraThresholdAsh', true);
+      entryType = 'resource';
+    }
+
+    newState = addLogEntry(newState, text, entryType);
+    newState.repetition = {
+      ...newState.repetition,
+      niraHouseInspectCount: count + 1,
+    };
+    return { newState, logText: text };
+  },
+};
+
+const listenAtNirasDoorAction: GameAction = {
+  id: 'listen-at-niras-door',
+  label: "listen at Nira's door",
+  cooldownSeconds: 5,
+  inGameMinutesPassed: 10,
+  repeatable: true,
+  visible: (state) => inChapter5(state) && flag(state, 'sawNiraWindow'),
+  isDisabled: (state) => state.repetition.niraDoorListenCount >= 2,
+  getDisabledReason: () => 'you know enough to answer carefully.',
+  onExecute: (state) => {
+    const count = state.repetition.niraDoorListenCount;
+    let newState = advanceTime({ ...state }, 10);
+
+    const text =
+      count === 0
+        ? 'you set your ear near the door.\ninside, someone breathes in small broken counts.\nthen a whisper that is not the cemetery says: "who keeps taking the first sound?"'
+        : 'the voice inside tries again.\n"i know my name starts with..."\nsilence cuts the sentence clean.\nthe living trace in your hand goes cold.\nNira is still here, but the ledger is learning her mouth.';
+
+    newState = addLogEntry(newState, text, 'whisper');
+    newState.repetition = {
+      ...newState.repetition,
+      niraDoorListenCount: count + 1,
+      whisperLevel: newState.repetition.whisperLevel + 1,
+    };
+
+    if (count === 1) {
+      newState = setFlag(newState, 'heardNiraInside', true);
+    }
+
+    return { newState, logText: text };
+  },
+};
+
+const dustNirasThresholdAction: GameAction = {
+  id: 'dust-niras-threshold',
+  label: "dust Nira's threshold",
+  cooldownSeconds: 5,
+  inGameMinutesPassed: 15,
+  repeatable: false,
+  visible: (state) => inChapter5(state) && flag(state, 'heardNiraInside'),
+  isDisabled: (state) =>
+    state.resources.livingNameAnchor < 1 ||
+    state.resources.thresholdAsh < 1 ||
+    flag(state, 'niraThresholdWarded'),
+  getDisabledReason: (state) => {
+    if (flag(state, 'niraThresholdWarded')) return "Nira's threshold is already warded.";
+    if (state.resources.livingNameAnchor < 1) return 'the living-name anchor is needed here.';
+    return 'the threshold ash has not been found.';
+  },
+  onExecute: (state) => {
+    let newState = advanceTime({ ...state }, 15);
+    const text =
+      'you mix the threshold ash with the pressure of the living-name anchor.\nthe ash darkens where it touches the doorframe.\nfor one breath, NIRA appears there in negative space, a name made by what the ledger cannot cross.';
+
+    newState = addLogEntry(newState, text, 'action');
+    newState = setFlag(newState, 'niraThresholdWarded', true);
+    newState.resources = {
+      ...newState.resources,
+      thresholdAsh: newState.resources.thresholdAsh - 1,
+    };
+    newState.repetition = {
+      ...newState.repetition,
+      deadAttention: clamp(newState.repetition.deadAttention - 1, 0, 999),
+    };
+    return { newState, logText: text };
+  },
+};
+
+const callNiraSoftlyAction: GameAction = {
+  id: 'call-nira-softly',
+  label: 'call Nira softly',
+  cooldownSeconds: 5,
+  inGameMinutesPassed: 10,
+  repeatable: false,
+  visible: (state) => inChapter5(state) && flag(state, 'niraThresholdWarded'),
+  isDisabled: (state) => flag(state, 'niraAnsweredFromInside'),
+  getDisabledReason: () => 'Nira has heard you.',
+  onExecute: (state) => {
+    let newState = advanceTime({ ...state }, 10);
+    const text =
+      '"Nira," you say, soft enough that the cemetery cannot wear it.\ninside, the breathing stops.\nthen a hand touches the other side of the door.\n"i remember that," she says.\n"please do not say it loudly."\n\nChapter 5 has found its living voice.';
+
+    newState = addLogEntry(newState, text, 'whisper');
+    newState = setFlag(newState, 'niraAnsweredFromInside', true);
+    newState = setFlag(newState, 'chapter5FirstContact', true);
+    newState.player = {
+      ...newState.player,
+      courage: clamp(newState.player.courage + 1, 0, newState.player.maxCourage),
+    };
+    return { newState, logText: text };
+  },
+};
+
 // ─── Action Registry (ordered) ────────────────────────────────────────────────
 
 const ACTION_LIST: GameAction[] = [
@@ -2186,6 +2322,11 @@ const ACTION_LIST: GameAction[] = [
   followLivingTraceAction,
   // Chapter 4→5 transition
   takeServicePathAction,
+  // Chapter 5
+  inspectNirasHouseAction,
+  listenAtNirasDoorAction,
+  dustNirasThresholdAction,
+  callNiraSoftlyAction,
 ];
 
 export const gameActions: Record<string, GameAction> = Object.fromEntries(
