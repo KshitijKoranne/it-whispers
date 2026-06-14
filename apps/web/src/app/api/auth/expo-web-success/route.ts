@@ -1,5 +1,5 @@
 /**
- * ⚠ ANYTHING PLATFORM — DO NOT REWRITE THIS FILE ⚠
+ * Platform scaffold - keep public auth surface stable
  *
  * Shipped v2 Expo-web postMessage bridge. Renders an HTML page that posts
  * `{ type: 'AUTH_SUCCESS'|'AUTH_ERROR', jwt, user }` to window.parent —

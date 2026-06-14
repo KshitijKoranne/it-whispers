@@ -1,5 +1,5 @@
 /**
- * ⚠ ANYTHING PLATFORM — DO NOT REWRITE THIS FILE ⚠
+ * Platform scaffold - keep public auth surface stable
  *
  * Shipped v2 mobile token-exchange endpoint. The mobile WebView intercepts
  * the redirect to this URL after signup/signin, fetches the JSON, and stores

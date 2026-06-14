@@ -1,5 +1,5 @@
 /**
- * ⚠ ANYTHING PLATFORM — DO NOT REWRITE THIS FILE ⚠
+ * Platform scaffold - keep public auth surface stable
  *
  * Shipped v2 better-auth catch-all. `toNextJsHandler(auth)` wires up every
  * better-auth endpoint (/sign-up/email, /sign-in/email, /get-session, ...).

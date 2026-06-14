@@ -1,5 +1,5 @@
 /**
- * ⚠ ANYTHING PLATFORM — DO NOT REWRITE THIS FILE ⚠
+ * Platform scaffold - keep public auth surface stable
  *
  * Shipped v2 zustand stores for auth session (persisted to SecureStore) and
  * auth modal open/close state. `useAuth`, `useAuthModal` component, and

@@ -1,5 +1,5 @@
 /**
- * ⚠ ANYTHING PLATFORM — DO NOT REWRITE THIS FILE ⚠
+ * Platform scaffold - keep public auth surface stable
  *
  * Shipped v2 better-auth configuration. The hooks.before middleware (backfills
  * `name` from email), bearer() plugin (mobile Authorization: Bearer flow),

@@ -1,5 +1,5 @@
 /**
- * ⚠ ANYTHING PLATFORM — DO NOT REWRITE THIS FILE ⚠
+ * Platform scaffold - keep public auth surface stable
  *
  * Shipped v2 mobile auth hook. `useAuth()` is the public surface for
  * user apps — `{ signIn, signUp, signOut, auth, isAuthenticated, isReady }`.

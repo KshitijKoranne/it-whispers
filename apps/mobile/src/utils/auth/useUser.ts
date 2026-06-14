@@ -1,5 +1,5 @@
 /**
- * ⚠ ANYTHING PLATFORM — DO NOT REWRITE THIS FILE ⚠
+ * Platform scaffold - keep public auth surface stable
  *
  * V1-compatible mobile user hook. Migrated apps commonly import
  * `@/utils/auth/useUser` and expect `{ user, data, loading, refetch }`.

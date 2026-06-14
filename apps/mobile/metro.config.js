@@ -52,10 +52,6 @@ const WEB_ALIASES = {
 	),
 	"expo-contacts": path.resolve(__dirname, "./polyfills/web/contacts.web.ts"),
 	"expo-font": path.resolve(__dirname, "./polyfills/web/expo-font.web.ts"),
-	"react-native-google-mobile-ads": path.resolve(
-		__dirname,
-		"./polyfills/web/google-mobile-ads.web.tsx",
-	),
 	"react-native-web/dist/exports/ScrollView": path.resolve(
 		__dirname,
 		"./polyfills/web/scrollview.web.tsx",
@@ -81,10 +77,6 @@ const NATIVE_ALIASES = {
 	"./Libraries/Components/TextInput/TextInput": path.resolve(
 		__dirname,
 		"./polyfills/native/textinput.native.tsx",
-	),
-	"react-native-google-mobile-ads": path.resolve(
-		__dirname,
-		"./polyfills/native/google-mobile-ads.native.tsx",
 	),
 };
 // Aliases that only apply outside production. The real packages crash on
@@ -130,18 +122,6 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
 				"@expo-google-fonts/dev",
 				platform,
 			);
-		}
-		// Resolve the builder menu to an empty component in production
-		if (moduleName === "./src/__create/anything-menu") {
-			const isProduction = process.env.EXPO_PUBLIC_CREATE_ENV === "PRODUCTION";
-			if (isProduction) {
-				// Create empty component for production
-				const emptyComponentPath = path.resolve(
-					__dirname,
-					"./polyfills/shared/empty-component.tsx",
-				);
-				return context.resolveRequest(context, emptyComponentPath, platform);
-			}
 		}
 		if (SHARED_ALIASES[moduleName] && !moduleName.startsWith("./polyfills/")) {
 			return context.resolveRequest(

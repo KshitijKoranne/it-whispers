@@ -6,6 +6,7 @@ import { GameState } from '@/lib/game/types';
 import { createInitialGameState, addLogEntry, tickAfterAction } from '@/lib/game/state';
 import { saveGame, loadGame } from '@/lib/game/save';
 import { getVisibleActions } from '@/lib/game/actions';
+import { filterInitialReleaseActions, isInitialReleaseComplete } from '@/lib/game/initial-release';
 import { ActionButton } from '@/components/game/ActionButton';
 import { ResourcePanel } from '@/components/game/ResourcePanel';
 import { EventLog } from '@/components/game/EventLog';
@@ -70,6 +71,35 @@ function LoadingScreen() {
       }}
     >
       <span style={{ color: '#2e2e2e', fontSize: '0.8rem', letterSpacing: '0.12em' }}>loading</span>
+    </div>
+  );
+}
+
+function ComingSoonPanel() {
+  return (
+    <div
+      style={{
+        border: '1px solid #242424',
+        background: '#0f0f0f',
+        padding: '1.1rem 1.2rem',
+        maxWidth: '40rem',
+      }}
+    >
+      <div
+        style={{
+          color: '#6f7f86',
+          fontSize: '0.72rem',
+          letterSpacing: '0.24em',
+          textTransform: 'uppercase',
+          marginBottom: '0.75rem',
+        }}
+      >
+        coming soon
+      </div>
+      <div style={{ color: '#c8bfaf', fontSize: '1rem', lineHeight: 1.65 }}>
+        The first arc is complete. The nameless row, living-name chapters, and paid expansions
+        will open in a later update.
+      </div>
     </div>
   );
 }
@@ -163,7 +193,8 @@ function GamePageContent() {
 
   if (!gameState) return <LoadingScreen />;
 
-  const visibleActions = getVisibleActions(gameState);
+  const releaseComplete = isInitialReleaseComplete(gameState);
+  const visibleActions = filterInitialReleaseActions(gameState, getVisibleActions(gameState));
 
   // ── Grain overlay (inline SVG data-url noise) ──────────────
   const grainStyle: React.CSSProperties = {
@@ -348,6 +379,7 @@ function GamePageContent() {
                   );
                 })}
               </div>
+              {releaseComplete && <ComingSoonPanel />}
             </div>
           </div>
 

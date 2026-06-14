@@ -1,5 +1,5 @@
 /**
- * ⚠ ANYTHING PLATFORM — DO NOT REWRITE THIS FILE ⚠
+ * Platform scaffold - keep public auth surface stable
  *
  * Shipped v2 auth helpers. `authFetch` auto-adds Authorization: Bearer <jwt>
  * when a session exists — use it instead of bare fetch() for calls to the

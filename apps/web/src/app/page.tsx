@@ -173,6 +173,7 @@ export default function HomePage() {
               )}
 
               <HomeButton onClick={() => setShowSettings(true)}>settings</HomeButton>
+              <ComingSoonButton>support / paid chapters coming soon</ComingSoonButton>
             </>
           ) : (
             <div
@@ -231,6 +232,31 @@ export default function HomePage() {
         onResetSave={handleResetSave}
       />
     </div>
+  );
+}
+
+function ComingSoonButton({ children }: { children: ReactNode }) {
+  return (
+    <button
+      type="button"
+      disabled
+      style={{
+        display: 'block',
+        width: '100%',
+        padding: '0.75rem 1.25rem',
+        background: 'transparent',
+        border: '1px solid #171717',
+        color: '#3f3f3f',
+        fontSize: '0.92rem',
+        fontFamily: 'var(--font-prose)',
+        letterSpacing: '0.1em',
+        textAlign: 'center',
+        cursor: 'not-allowed',
+        textTransform: 'lowercase',
+      }}
+    >
+      {children}
+    </button>
   );
 }
 

@@ -1,5 +1,5 @@
 /**
- * ⚠ ANYTHING PLATFORM — DO NOT REWRITE THIS FILE ⚠
+ * Platform scaffold - keep public auth surface stable
  *
  * Renders the social sign-in buttons on the signin/signup pages. The set of
  * providers comes from NEXT_PUBLIC_CREATE_AUTH_PROVIDERS, which the platform

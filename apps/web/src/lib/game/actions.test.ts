@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { getVisibleActions } from './actions';
+import { filterInitialReleaseActions, isInitialReleaseComplete } from './initial-release';
 import { createInitialGameState } from './state';
 import { GameState } from './types';
 
@@ -392,6 +393,25 @@ describe('Chapter 4 transition', () => {
 
     expect(action).toBeDefined();
     expect(action?.isDisabled?.(state)).toBe(false);
+  });
+
+  it('caps the initial release after the first three chapters', () => {
+    const state = completeFirstArc();
+    const allVisibleIds = getVisibleActions(state).map((action) => action.id);
+    const releaseVisibleIds = filterInitialReleaseActions(state, getVisibleActions(state)).map(
+      (action) => action.id
+    );
+
+    expect(isInitialReleaseComplete(state)).toBe(true);
+    expect(allVisibleIds).toContain('walk-to-nameless-row');
+    expect(releaseVisibleIds).not.toContain('walk-to-nameless-row');
+  });
+
+  it('does not cap content before the first arc is complete', () => {
+    const state = enterChapter3();
+
+    expect(isInitialReleaseComplete(state)).toBe(false);
+    expect(filterInitialReleaseActions(state, getVisibleActions(state))).toEqual(getVisibleActions(state));
   });
 
   it('moves the player into chapter 4 and grants grave chalk', () => {

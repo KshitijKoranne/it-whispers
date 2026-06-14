@@ -1,5 +1,5 @@
 /**
- * ⚠ ANYTHING PLATFORM — DO NOT REWRITE THIS FILE ⚠
+ * Platform scaffold - keep public auth surface stable
  *
  * Shipped v2 <AuthModal /> — the modal that wraps the AuthWebView. It's
  * already mounted in app/_layout.tsx; DO NOT mount it again. The env-var
@@ -12,7 +12,7 @@
 'use client';
 
 import React from 'react';
-import { Modal, Text, View } from 'react-native';
+import { Modal, StyleSheet, Text, View } from 'react-native';
 import { AuthWebView } from './AuthWebView';
 import { useAuthModal, useAuthStore } from './store';
 
@@ -63,11 +63,11 @@ export const AuthModal = () => {
         animationType="slide"
         presentationStyle="pageSheet"
       >
-        <View className="flex-1 items-center justify-center bg-white p-[24px]">
-          <Text className="mb-[8px] text-[18px] font-semibold">
+        <View style={styles.configContainer}>
+          <Text style={styles.configTitle}>
             Auth is not configured
           </Text>
-          <Text className="text-center text-[14px] text-gray-600">
+          <Text style={styles.configText}>
             Missing environment variable{missing.includes(',') ? 's' : ''}:{' '}
             {missing}. Set {missing.includes(',') ? 'them' : 'it'} in your .env
             and restart the app.
@@ -100,5 +100,25 @@ export const AuthModal = () => {
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  configContainer: {
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    flex: 1,
+    justifyContent: 'center',
+    padding: 24,
+  },
+  configText: {
+    color: '#4b5563',
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  configTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+});
 
 export default useAuthModal;

@@ -1,5 +1,5 @@
 /**
- * ⚠ ANYTHING PLATFORM — DO NOT REWRITE THIS FILE ⚠
+ * Platform scaffold - keep public auth surface stable
  *
  * Dev-only helper for the social sign-in shim. Reports which OAuth credential
  * env vars are missing for a provider so the builder preview can warn that the

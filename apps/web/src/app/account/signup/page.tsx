@@ -1,5 +1,5 @@
 /**
- * ⚠ ANYTHING PLATFORM — DO NOT REWRITE THIS FILE ⚠
+ * Platform scaffold - keep public auth surface stable
  *
  * Shipped v2 auth scaffolding. The <form onSubmit>, e.preventDefault(), and
  * window.location.href redirect are load-bearing for the mobile WebView auth

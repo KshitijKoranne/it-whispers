@@ -1,5 +1,5 @@
 /**
- * ⚠ ANYTHING PLATFORM — DO NOT REWRITE THIS FILE ⚠
+ * Platform scaffold - keep public auth surface stable
  *
  * Shipped v2 better-auth client. Signup/signin pages and the mobile app all
  * import from here. Safe to leave as-is; unsafe to pass an explicit baseURL

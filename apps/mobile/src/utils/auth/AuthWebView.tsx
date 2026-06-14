@@ -1,5 +1,5 @@
 /**
- * ⚠ ANYTHING PLATFORM — DO NOT REWRITE THIS FILE ⚠
+ * Platform scaffold - keep public auth surface stable
  *
  * Shipped v2 auth WebView. Handles both native (iOS/Android WebView +
  * onShouldStartLoadWithRequest → fetch /api/auth/token → setAuth) and web

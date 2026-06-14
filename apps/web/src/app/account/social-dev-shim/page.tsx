@@ -1,5 +1,5 @@
 /**
- * ⚠ ANYTHING PLATFORM — DO NOT REWRITE THIS FILE ⚠
+ * Platform scaffold - keep public auth surface stable
  *
  * Dev-only simulated social sign-in. Real OAuth (Google/Apple) cannot run
  * inside the builder's cross-origin preview iframe — and each sandbox has a

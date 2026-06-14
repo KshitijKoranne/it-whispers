@@ -1,5 +1,5 @@
 /**
- * ⚠ ANYTHING PLATFORM — DO NOT REWRITE THIS FILE ⚠
+ * Platform scaffold - keep public auth surface stable
  *
  * Shipped v2 auth scaffolding. The useEffect-on-mount → authClient.signOut →
  * window.location.href redirect is load-bearing for the mobile WebView's

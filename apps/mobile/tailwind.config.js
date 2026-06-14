@@ -1,7 +1,12 @@
-import config from '@anythingai/app/tailwind.config';
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./node_modules/@anythingai/app/**/*.{js,ts,jsx,tsx}'],
-  ...config,
+  content: [
+    './App.{js,jsx,ts,tsx}',
+    './src/**/*.{js,jsx,ts,tsx}',
+    './components/**/*.{js,jsx,ts,tsx}',
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
 };

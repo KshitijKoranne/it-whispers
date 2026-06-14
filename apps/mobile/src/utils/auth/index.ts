@@ -1,5 +1,5 @@
 /**
- * ⚠ ANYTHING PLATFORM — DO NOT REWRITE THIS FILE ⚠
+ * Platform scaffold - keep public auth surface stable
  *
  * Shipped v2 auth barrel. Keeps the public import surface stable so user
  * code can `import { useAuth, useUser, useAuthModal, authFetch } from '@/utils/auth'`.
