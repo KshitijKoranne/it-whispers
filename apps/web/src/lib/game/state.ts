@@ -42,6 +42,7 @@ export function createInitialGameState(): GameState {
       livingNameTrace: 0,
       livingNameAnchor: 0,
       thresholdAsh: 0,
+      niraFirstSound: 0,
     },
     tools: {
       hasLantern: false,
@@ -96,6 +97,7 @@ export function createInitialGameState(): GameState {
       livingTraceListenCount: 0,
       niraHouseInspectCount: 0,
       niraDoorListenCount: 0,
+      niraMemoryListenCount: 0,
     },
     settings: {
       sound: true,

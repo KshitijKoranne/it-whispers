@@ -2258,6 +2258,125 @@ const callNiraSoftlyAction: GameAction = {
   },
 };
 
+const askNiraWhatSheRemembersAction: GameAction = {
+  id: 'ask-nira-what-she-remembers',
+  label: 'ask what Nira remembers',
+  cooldownSeconds: 5,
+  inGameMinutesPassed: 10,
+  repeatable: true,
+  visible: (state) =>
+    inChapter5(state) && flag(state, 'chapter5FirstContact') && !flag(state, 'niraDoorOpened'),
+  isDisabled: (state) => state.repetition.niraMemoryListenCount >= 2,
+  getDisabledReason: () => 'Nira has told you where the loss begins.',
+  onExecute: (state) => {
+    const count = state.repetition.niraMemoryListenCount;
+    let newState = advanceTime({ ...state }, 10);
+
+    const text =
+      count === 0
+        ? '"i remember my mother calling from the well," Nira says through the door.\n"i remember running before she finished."\n"now every memory starts after the first sound."'
+        : '"there is a shape before the rest," she whispers.\n"like my name begins behind my teeth and the ledger catches it there."\ninside the stitched page, the first blank line tightens around a missing sound.';
+
+    newState = addLogEntry(newState, text, 'whisper');
+    newState.repetition = {
+      ...newState.repetition,
+      niraMemoryListenCount: count + 1,
+      whisperLevel: newState.repetition.whisperLevel + 1,
+    };
+
+    if (count === 1) {
+      newState = setFlag(newState, 'niraFirstSoundMissing', true);
+    }
+
+    return { newState, logText: text };
+  },
+};
+
+const slideStitchedPageUnderDoorAction: GameAction = {
+  id: 'slide-stitched-page-under-door',
+  label: 'slide the stitched page under the door',
+  cooldownSeconds: 5,
+  inGameMinutesPassed: 15,
+  repeatable: false,
+  visible: (state) => inChapter5(state) && flag(state, 'niraFirstSoundMissing'),
+  isDisabled: (state) =>
+    state.resources.stitchedLedgerPage < 1 ||
+    state.resources.livingNameAnchor < 1 ||
+    flag(state, 'niraFirstSoundReturned'),
+  getDisabledReason: (state) => {
+    if (flag(state, 'niraFirstSoundReturned')) return "Nira's first sound has been returned.";
+    if (state.resources.stitchedLedgerPage < 1) return 'the stitched page is needed to catch the theft.';
+    return 'the living-name anchor is needed to hold the sound.';
+  },
+  onExecute: (state) => {
+    let newState = advanceTime({ ...state }, 15);
+    const text =
+      'you slide the stitched page beneath the door.\nfrom inside, Nira lays one finger on the blank line.\nthe ink jerks toward her, then stops against the living-name anchor.\n\nA first sound lifts out of the paper.\nsmall as a caught breath.\nN.';
+
+    newState = addLogEntry(newState, text, 'resource');
+    newState = setFlag(newState, 'niraFirstSoundReturned', true);
+    newState.resources = {
+      ...newState.resources,
+      niraFirstSound: newState.resources.niraFirstSound + 1,
+    };
+    newState.repetition = {
+      ...newState.repetition,
+      deadAttention: newState.repetition.deadAttention + 2,
+      whisperLevel: newState.repetition.whisperLevel + 1,
+    };
+    return { newState, logText: text };
+  },
+};
+
+const teachNiraQuietNameAction: GameAction = {
+  id: 'teach-nira-the-quiet-name',
+  label: 'teach Nira the quiet name',
+  cooldownSeconds: 5,
+  inGameMinutesPassed: 10,
+  repeatable: false,
+  visible: (state) => inChapter5(state) && flag(state, 'niraFirstSoundReturned'),
+  isDisabled: (state) => state.resources.niraFirstSound < 1 || flag(state, 'niraQuietNameKnown'),
+  getDisabledReason: (state) => {
+    if (flag(state, 'niraQuietNameKnown')) return 'Nira knows how to hold her name quietly.';
+    return 'the first sound has not been returned.';
+  },
+  onExecute: (state) => {
+    let newState = advanceTime({ ...state }, 10);
+    const text =
+      'you do not say the whole name.\nyou teach her the first sound as a door teaches a knock: close, quiet, held in wood.\nNira repeats it without giving it to the night.\n"N," she says.\nthen, softer, "Nira."';
+
+    newState = addLogEntry(newState, text, 'whisper');
+    newState = setFlag(newState, 'niraQuietNameKnown', true);
+    newState.player = {
+      ...newState.player,
+      courage: clamp(newState.player.courage + 1, 0, newState.player.maxCourage),
+    };
+    return { newState, logText: text };
+  },
+};
+
+const enterNirasHouseAction: GameAction = {
+  id: 'enter-niras-house',
+  label: "enter Nira's house",
+  cooldownSeconds: 5,
+  inGameMinutesPassed: 10,
+  repeatable: false,
+  visible: (state) => inChapter5(state) && flag(state, 'niraQuietNameKnown') && !flag(state, 'niraDoorOpened'),
+  isDisabled: (state) => flag(state, 'niraDoorOpened'),
+  getDisabledReason: () => "Nira's door is already open.",
+  onExecute: (state) => {
+    let newState = advanceTime({ ...state }, 10);
+    const text =
+      'the lock turns from the inside.\nNira opens the door only wide enough for you and the lantern.\nbehind her, the house smells of boiled nettles, cold iron, and ink.\n\nThe cemetery is no longer the only place where names can be taken.';
+
+    newState.currentLocation = "Nira's Kitchen";
+    newState = setFlag(newState, 'niraDoorOpened', true);
+    newState = setFlag(newState, 'chapter5HouseEntered', true);
+    newState = addLogEntry(newState, text, 'story');
+    return { newState, logText: text };
+  },
+};
+
 // ─── Action Registry (ordered) ────────────────────────────────────────────────
 
 const ACTION_LIST: GameAction[] = [
@@ -2327,6 +2446,10 @@ const ACTION_LIST: GameAction[] = [
   listenAtNirasDoorAction,
   dustNirasThresholdAction,
   callNiraSoftlyAction,
+  askNiraWhatSheRemembersAction,
+  slideStitchedPageUnderDoorAction,
+  teachNiraQuietNameAction,
+  enterNirasHouseAction,
 ];
 
 export const gameActions: Record<string, GameAction> = Object.fromEntries(

@@ -51,6 +51,7 @@ export interface Resources {
   livingNameTrace: number;
   livingNameAnchor: number;
   thresholdAsh: number;
+  niraFirstSound: number;
 }
 
 export interface Tools {
@@ -88,6 +89,7 @@ export interface RepetitionVariables {
   livingTraceListenCount: number;
   niraHouseInspectCount: number;
   niraDoorListenCount: number;
+  niraMemoryListenCount: number;
 }
 
 export interface CombatState {

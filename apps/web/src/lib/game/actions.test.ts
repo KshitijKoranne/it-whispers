@@ -132,6 +132,24 @@ function wardNirasThreshold(state = hearNiraInside()): GameState {
   return findAction(state, 'dust-niras-threshold').onExecute(state).newState;
 }
 
+function makeFirstContactWithNira(state = wardNirasThreshold()): GameState {
+  return findAction(state, 'call-nira-softly').onExecute(state).newState;
+}
+
+function learnNirasMissingSound(state = makeFirstContactWithNira()): GameState {
+  const ask = findAction(state, 'ask-nira-what-she-remembers');
+  const firstAsk = ask.onExecute(state).newState;
+  return ask.onExecute(firstAsk).newState;
+}
+
+function returnNirasFirstSound(state = learnNirasMissingSound()): GameState {
+  return findAction(state, 'slide-stitched-page-under-door').onExecute(state).newState;
+}
+
+function teachNirasQuietName(state = returnNirasFirstSound()): GameState {
+  return findAction(state, 'teach-nira-the-quiet-name').onExecute(state).newState;
+}
+
 function enterChapter3(): GameState {
   const chapter2Complete = {
     ...completeFirstArc(),
@@ -779,5 +797,82 @@ describe('Chapter 4 transition', () => {
     expect(answered.flags.chapter5FirstContact).toBe(true);
     expect(answered.player.courage).toBe(Math.min(warded.player.courage + 1, warded.player.maxCourage));
     expect(call.isDisabled?.(answered)).toBe(true);
+  });
+
+  it('offers a new non-disabled action after first contact with Nira', () => {
+    const contacted = makeFirstContactWithNira();
+    const ask = findAction(contacted, 'ask-nira-what-she-remembers');
+
+    expect(ask.isDisabled?.(contacted)).toBe(false);
+    expect(getVisibleActions(contacted).some((action) => action.id === 'enter-niras-house')).toBe(false);
+  });
+
+  it('requires hearing what Nira lost before using the stitched page', () => {
+    const contacted = makeFirstContactWithNira();
+    expect(getVisibleActions(contacted).some((action) => action.id === 'slide-stitched-page-under-door')).toBe(false);
+
+    const ask = findAction(contacted, 'ask-nira-what-she-remembers');
+    const firstAsk = ask.onExecute(contacted).newState;
+    expect(firstAsk.flags.niraFirstSoundMissing).not.toBe(true);
+    expect(getVisibleActions(firstAsk).some((action) => action.id === 'slide-stitched-page-under-door')).toBe(false);
+
+    const secondAsk = ask.onExecute(firstAsk).newState;
+    expect(secondAsk.flags.niraFirstSoundMissing).toBe(true);
+    expect(secondAsk.repetition.niraMemoryListenCount).toBe(2);
+    expect(getVisibleActions(secondAsk).some((action) => action.id === 'slide-stitched-page-under-door')).toBe(true);
+  });
+
+  it('returns Nira first sound without spending the bridge artifacts', () => {
+    const ready = learnNirasMissingSound();
+    const slide = findAction(ready, 'slide-stitched-page-under-door');
+    const returned = slide.onExecute(ready).newState;
+
+    expect(returned.flags.niraFirstSoundReturned).toBe(true);
+    expect(returned.resources.niraFirstSound).toBe(1);
+    expect(returned.resources.stitchedLedgerPage).toBe(1);
+    expect(returned.resources.livingNameTrace).toBe(1);
+    expect(returned.resources.livingNameAnchor).toBe(1);
+    expect(slide.isDisabled?.(returned)).toBe(true);
+  });
+
+  it('does not return Nira first sound without the stitched page or anchor', () => {
+    const ready = learnNirasMissingSound();
+    const slide = findAction(ready, 'slide-stitched-page-under-door');
+
+    const noPage = {
+      ...ready,
+      resources: { ...ready.resources, stitchedLedgerPage: 0 },
+    };
+    expect(slide.isDisabled?.(noPage)).toBe(true);
+    expect(slide.getDisabledReason?.(noPage)).toBe('the stitched page is needed to catch the theft.');
+
+    const noAnchor = {
+      ...ready,
+      resources: { ...ready.resources, livingNameAnchor: 0 },
+    };
+    expect(slide.isDisabled?.(noAnchor)).toBe(true);
+    expect(slide.getDisabledReason?.(noAnchor)).toBe('the living-name anchor is needed to hold the sound.');
+  });
+
+  it('teaches Nira the quiet name before the door can open', () => {
+    const returned = returnNirasFirstSound();
+    expect(getVisibleActions(returned).some((action) => action.id === 'enter-niras-house')).toBe(false);
+
+    const teach = findAction(returned, 'teach-nira-the-quiet-name');
+    const taught = teach.onExecute(returned).newState;
+
+    expect(taught.flags.niraQuietNameKnown).toBe(true);
+    expect(getVisibleActions(taught).some((action) => action.id === 'enter-niras-house')).toBe(true);
+  });
+
+  it('enters Nira house only after her quiet name is known', () => {
+    const taught = teachNirasQuietName();
+    const enter = findAction(taught, 'enter-niras-house');
+    const inside = enter.onExecute(taught).newState;
+
+    expect(inside.currentLocation).toBe("Nira's Kitchen");
+    expect(inside.flags.niraDoorOpened).toBe(true);
+    expect(inside.flags.chapter5HouseEntered).toBe(true);
+    expect(getVisibleActions(inside).some((action) => action.id === 'enter-niras-house')).toBe(false);
   });
 });

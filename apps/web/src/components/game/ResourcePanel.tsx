@@ -169,9 +169,11 @@ export function ResourcePanel({ state }: ResourcePanelProps) {
   const inChapter5 = flags['chapter5Active'] === true && !flags['chapter5Complete'];
   const niraHouseInspectCount = repetition.niraHouseInspectCount ?? 0;
   const niraDoorListenCount = repetition.niraDoorListenCount ?? 0;
+  const niraMemoryListenCount = repetition.niraMemoryListenCount ?? 0;
   const showNiraHouse = inChapter5 && niraHouseInspectCount > 0;
   const showNiraDoor = inChapter5 && niraDoorListenCount > 0;
-  const hasChapter5Observed = showNiraHouse || showNiraDoor;
+  const showNiraMemory = inChapter5 && niraMemoryListenCount > 0;
+  const hasChapter5Observed = showNiraHouse || showNiraDoor || showNiraMemory;
 
   const lightLabel = lanternLit ? 'lantern' : 'candle';
 
@@ -390,6 +392,14 @@ export function ResourcePanel({ state }: ResourcePanelProps) {
               </span>
             </div>
           )}
+          {showNiraMemory && (
+            <div style={row}>
+              <span style={keyStyle}>Nira's memory</span>
+              <span style={{ ...valStyle, color: '#666666' }}>
+                heard {niraMemoryListenCount} / 2
+              </span>
+            </div>
+          )}
         </>
       )}
     </div>
@@ -430,6 +440,7 @@ function formatResourceName(key: string): string {
     livingNameTrace: 'living name trace',
     livingNameAnchor: 'living name anchor',
     thresholdAsh: 'threshold ash',
+    niraFirstSound: 'Nira first sound',
   };
   return names[key] ?? key;
 }
