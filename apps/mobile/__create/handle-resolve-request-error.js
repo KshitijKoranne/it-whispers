@@ -1,7 +1,6 @@
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
-const { reportErrorToRemote } = require('./report-error-to-remote');
 
 const VIRTUAL_ROOT = path.join(__dirname, '../.metro-virtual');
 const VIRTUAL_ROOT_UNRESOLVED = path.join(VIRTUAL_ROOT, 'unresolved');
@@ -15,9 +14,7 @@ const handleResolveRequestError = ({
   const errorMessage = `Unable to resolve module '${moduleName}' from '${context.originModulePath}'`;
   const syntheticError = new Error(errorMessage);
   syntheticError.stack = error.stack;
-  reportErrorToRemote({ error: syntheticError }).catch((_reportError) => {
-    // no-op
-  });
+  console.warn(syntheticError);
   if (process.env.NODE_ENV === 'production') throw error;
   if (platform === 'android') throw error;
   if (!__DEV__ && process.env.EXPO_PUBLIC_CREATE_ENV !== 'DEVELOPMENT')

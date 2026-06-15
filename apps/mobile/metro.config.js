@@ -2,7 +2,6 @@ const { getDefaultConfig } = require("expo/metro-config");
 const path = require("node:path");
 const fs = require("node:fs");
 const { FileStore } = require("metro-cache");
-const { reportErrorToRemote } = require("./__create/report-error-to-remote");
 const {
 	handleResolveRequestError,
 	VIRTUAL_ROOT,
@@ -75,18 +74,7 @@ const NATIVE_ALIASES = {
 		"./polyfills/native/textinput.native.tsx",
 	),
 };
-// Aliases that only apply outside production. The real packages crash on
-// import in Expo Go preview (their browser-mode shims pull in DOM-only code
-// that throws on Hermes), which makes expo-router silently swallow the load
-// error and warn "Route is missing the required default export" — leaving
-// the app on a black/splash screen. EAS production builds keep the real
-// modules so paid users hit the native SDKs as normal.
-const DEV_ONLY_NATIVE_ALIASES = {
-	"react-native-purchases": path.resolve(
-		__dirname,
-		"./polyfills/native/react-native-purchases.native.tsx",
-	),
-};
+const DEV_ONLY_NATIVE_ALIASES = {};
 const SHARED_ALIASES = {
 	"expo-image": path.resolve(__dirname, "./polyfills/shared/expo-image.tsx"),
 };
@@ -184,9 +172,7 @@ config.reporter = {
 		];
 		for (const errorType of reportableErrors) {
 			if (event.type === errorType) {
-				reportErrorToRemote({ error: event.error }).catch((_reportError) => {
-					// no-op
-				});
+				console.warn(event.error);
 			}
 		}
 		return event;

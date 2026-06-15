@@ -10,7 +10,10 @@ import {
 } from "react-native";
 import { WebView } from "react-native-webview";
 
-const configuredGameUrl = process.env.EXPO_PUBLIC_GAME_URL;
+const configuredGameUrl =
+	process.env.EXPO_PUBLIC_GAME_URL ||
+	process.env.EXPO_PUBLIC_APP_URL ||
+	process.env.EXPO_PUBLIC_BASE_URL;
 const missingGameUrlCopy = __DEV__
 	? "The mobile shell is ready. Set EXPO_PUBLIC_GAME_URL to the hosted web game URL before creating a Play Store build."
 	: "The game is temporarily unavailable. Please try again later.";
@@ -23,7 +26,7 @@ function normalizeGameUrl(value: string | undefined): string | null {
 
 	try {
 		const url = new URL(trimmed);
-		if (url.protocol !== "https:" && url.protocol !== "http:") return null;
+		if (url.protocol !== "https:" && (__DEV__ ? url.protocol !== "http:" : true)) return null;
 		if (!url.pathname || url.pathname === "/") {
 			url.pathname = "/game";
 		}

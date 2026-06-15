@@ -40,14 +40,17 @@
       [
         "expo-build-properties",
         {
+          "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35
+          },
           "ios": {
             "useFrameworks": "static"
           }
         }
       ],
       "expo-font",
-      "expo-web-browser",
-      "@sentry/react-native/expo"
+      "expo-web-browser"
     ],
     "web": {
       "bundler": "metro",
