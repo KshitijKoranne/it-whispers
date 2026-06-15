@@ -55,7 +55,6 @@
     "expo-modules-core": "3.0.30",
     "expo-notifications": "0.32.17",
     "expo-router": "patch:expo-router@npm%3A6.0.11#~/.yarn/patches/expo-router+6.0.11.patch",
-    "expo-secure-store": "15.0.8",
     "expo-sensors": "15.0.8",
     "expo-speech": "14.0.8",
     "expo-splash-screen": "31.0.13",

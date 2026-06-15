@@ -1,8 +1,6 @@
-import * as SecureStore from 'expo-secure-store';
 import { fetch as expoFetch } from 'expo/fetch';
 
 const originalFetch = fetch;
-const authKey = `${process.env.EXPO_PUBLIC_PROJECT_GROUP_ID}-jwt`;
 
 const getURLFromArgs = (...args: Parameters<typeof fetch>) => {
   const [urlArg] = args;
@@ -83,18 +81,6 @@ const fetchToWeb = async function fetchWithHeaders(...args: Params) {
     if (value) {
       finalHeaders.set(key, value);
     }
-  }
-
-  const auth = await SecureStore.getItemAsync(authKey)
-    .then((auth) => {
-      return auth ? JSON.parse(auth) : null;
-    })
-    .catch(() => {
-      return null;
-    });
-
-  if (auth) {
-    finalHeaders.set('authorization', `Bearer ${auth.jwt}`);
   }
 
   return expoFetch(finalInput, {

@@ -241,11 +241,11 @@ function GamePageContent() {
     const whisper = new Audio(AUDIO_ASSETS.whisper);
 
     wind.loop = true;
-    wind.volume = 0.18;
+    wind.volume = 0.09;
     candle.loop = true;
-    candle.volume = 0.14;
-    action.volume = 0.36;
-    whisper.volume = 0.28;
+    candle.volume = 0.05;
+    action.volume = 0.22;
+    whisper.volume = 0.18;
 
     audioRef.current = { action, candle, whisper, wind };
 

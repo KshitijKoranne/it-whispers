@@ -1179,124 +1179,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@better-auth/core@npm:1.5.6":
-  version: 1.5.6
-  resolution: "@better-auth/core@npm:1.5.6"
-  dependencies:
-    "@opentelemetry/semantic-conventions": "npm:^1.39.0"
-    "@standard-schema/spec": "npm:^1.1.0"
-    zod: "npm:^4.3.6"
-  peerDependencies:
-    "@better-auth/utils": 0.3.1
-    "@better-fetch/fetch": 1.1.21
-    "@cloudflare/workers-types": ">=4"
-    "@opentelemetry/api": ^1.9.0
-    better-call: 1.3.2
-    jose: ^6.1.0
-    kysely: ^0.28.5
-    nanostores: ^1.0.1
-  peerDependenciesMeta:
-    "@cloudflare/workers-types":
-      optional: true
-  checksum: 10c0/ac491dcff36e8c3a87807cb5a7c0d67d8f6826945f5de45ad07c1bf60cb8e8f08a42632472f9e697cc88bf8bb7db9dc8c35685c5ff32d7dad3813008b5e269a3
-  languageName: node
-  linkType: hard
-
-"@better-auth/drizzle-adapter@npm:1.5.6":
-  version: 1.5.6
-  resolution: "@better-auth/drizzle-adapter@npm:1.5.6"
-  peerDependencies:
-    "@better-auth/core": 1.5.6
-    "@better-auth/utils": ^0.3.0
-    drizzle-orm: ">=0.41.0"
-  peerDependenciesMeta:
-    drizzle-orm:
-      optional: true
-  checksum: 10c0/0fab265b110d8b84d5c8aaadf8e3ee4039e7dd40615ebed6f29975444da1b5e673c9dac8795858bd3668b54b4f2b7ea3bec552da05dc7850eaaf14e6e1bb660d
-  languageName: node
-  linkType: hard
-
-"@better-auth/kysely-adapter@npm:1.5.6":
-  version: 1.5.6
-  resolution: "@better-auth/kysely-adapter@npm:1.5.6"
-  peerDependencies:
-    "@better-auth/core": 1.5.6
-    "@better-auth/utils": ^0.3.0
-    kysely: ^0.27.0 || ^0.28.0
-  peerDependenciesMeta:
-    kysely:
-      optional: true
-  checksum: 10c0/3beb590bd5353d5ebb858350aa3d44399efc51ebd173e7bf5b54956e875b4d9a96ea0431d86a8bce75532a5c2e836f1349fbbb484ad6b276b6aefc2650a31bad
-  languageName: node
-  linkType: hard
-
-"@better-auth/memory-adapter@npm:1.5.6":
-  version: 1.5.6
-  resolution: "@better-auth/memory-adapter@npm:1.5.6"
-  peerDependencies:
-    "@better-auth/core": 1.5.6
-    "@better-auth/utils": ^0.3.0
-  checksum: 10c0/30afbbb791df53193b6f3e36612bb87a134d4e2f2c858d2949fd15a6f5f035a5b3043f2345da722aed103223be6b10a11526a77927d5941ae38a6ac0e301862a
-  languageName: node
-  linkType: hard
-
-"@better-auth/mongo-adapter@npm:1.5.6":
-  version: 1.5.6
-  resolution: "@better-auth/mongo-adapter@npm:1.5.6"
-  peerDependencies:
-    "@better-auth/core": 1.5.6
-    "@better-auth/utils": ^0.3.0
-    mongodb: ^6.0.0 || ^7.0.0
-  peerDependenciesMeta:
-    mongodb:
-      optional: true
-  checksum: 10c0/93d2b23eeefe2e5c8c96bfed97288a9054b9b710422f2557d98126845582499ed3a9c4c1ad4b9001127517540a48a7726ca8a83ddc3e607b49c2f460238774f7
-  languageName: node
-  linkType: hard
-
-"@better-auth/prisma-adapter@npm:1.5.6":
-  version: 1.5.6
-  resolution: "@better-auth/prisma-adapter@npm:1.5.6"
-  peerDependencies:
-    "@better-auth/core": 1.5.6
-    "@better-auth/utils": ^0.3.0
-    "@prisma/client": ^5.0.0 || ^6.0.0 || ^7.0.0
-    prisma: ^5.0.0 || ^6.0.0 || ^7.0.0
-  peerDependenciesMeta:
-    "@prisma/client":
-      optional: true
-    prisma:
-      optional: true
-  checksum: 10c0/ed688784fc8017d9dc539477d02d187111365d1374e6ee1b4f04063b908e005c26448e66ce7b2a8423b94ed7dd8a2c95c6b1a52170ebc1eab2b56b81b1f1b34d
-  languageName: node
-  linkType: hard
-
-"@better-auth/telemetry@npm:1.5.6":
-  version: 1.5.6
-  resolution: "@better-auth/telemetry@npm:1.5.6"
-  dependencies:
-    "@better-auth/utils": "npm:0.3.1"
-    "@better-fetch/fetch": "npm:1.1.21"
-  peerDependencies:
-    "@better-auth/core": 1.5.6
-  checksum: 10c0/7fe34a511d4302cf2876fa862787fd739a634ac1b72816cf0e95302b208cd335b13ef89ffa2e9399c8fa67768d877c322c7f763c7a82942f083983f59b221210
-  languageName: node
-  linkType: hard
-
-"@better-auth/utils@npm:0.3.1, @better-auth/utils@npm:^0.3.1":
-  version: 0.3.1
-  resolution: "@better-auth/utils@npm:0.3.1"
-  checksum: 10c0/cd3d36f28ab5a9afce5b582fbd8a52000c5ef43bef1b4d6586df6aa4c6d8b8757cb6b9b83370d5913713bce3a64c12694e8eb3b109e3ec34768e0e0904b3bf58
-  languageName: node
-  linkType: hard
-
-"@better-fetch/fetch@npm:1.1.21, @better-fetch/fetch@npm:^1.1.21":
-  version: 1.1.21
-  resolution: "@better-fetch/fetch@npm:1.1.21"
-  checksum: 10c0/b23355b9eb397a4e6d3b269b027f19c44e3348b42640fa8f133ea4ca9c07e1d289781d2b18477f56883040e7401fcc751c52a6f0b56ea619bdd3132fff3cbb43
-  languageName: node
-  linkType: hard
-
 "@csstools/color-helpers@npm:^5.1.0":
   version: 5.1.0
   resolution: "@csstools/color-helpers@npm:5.1.0"
@@ -3348,15 +3230,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neondatabase/serverless@npm:^0.10.4":
-  version: 0.10.4
-  resolution: "@neondatabase/serverless@npm:0.10.4"
-  dependencies:
-    "@types/pg": "npm:8.11.6"
-  checksum: 10c0/699364f923cf24baf72a0ba87018227b3c0ec3771069d4507b42ac059e657ed5074da7e96afa8d45683f27eb380fad41e63238c566f9709e52ee38d791b51fe7
-  languageName: node
-  linkType: hard
-
 "@next/env@npm:16.2.6":
   version: 16.2.6
   resolution: "@next/env@npm:16.2.6"
@@ -3420,20 +3293,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/ciphers@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "@noble/ciphers@npm:2.1.1"
-  checksum: 10c0/f02662723475a9785a2f7bcd6e8e12d4b5f77537154f5e21edb0fed398051fb1ae5057eb444987e1c65342f8632474f0143ea612a2dad49593d3358eb730a079
-  languageName: node
-  linkType: hard
-
-"@noble/hashes@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@noble/hashes@npm:2.0.1"
-  checksum: 10c0/e81769ce21c3b1c80141a3b99bd001f17edea09879aa936692ae39525477386d696101cd573928a304806efb2b9fa751e1dd83241c67d0c84d30091e85c79bdb
-  languageName: node
-  linkType: hard
-
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -3487,20 +3346,6 @@ __metadata:
   version: 4.0.0
   resolution: "@npmcli/redact@npm:4.0.0"
   checksum: 10c0/a1e9ba9c70a6b40e175bda2c3dd8cfdaf096e6b7f7a132c855c083c8dfe545c3237cd56702e2e6627a580b1d63373599d49a1192c4078a85bf47bbde824df31c
-  languageName: node
-  linkType: hard
-
-"@opentelemetry/api@npm:^1.9.0":
-  version: 1.9.1
-  resolution: "@opentelemetry/api@npm:1.9.1"
-  checksum: 10c0/c608485fc8b5a91e1f7e05e843b45b509307456b31cd2ad365933d90813e40ebfedf179f1451c762037e82d7c76aa8500e95d2da3609f640a1206cde5322cd14
-  languageName: node
-  linkType: hard
-
-"@opentelemetry/semantic-conventions@npm:^1.39.0":
-  version: 1.40.0
-  resolution: "@opentelemetry/semantic-conventions@npm:1.40.0"
-  checksum: 10c0/3259de0ea11b52eb70e44c12eba21448392baf9cb74c37b62071c4a5ed7fb89b61e194f3898d40ac6bfa7293617a0e132876cb6e355472b66de0cdb13c50b529
   languageName: node
   linkType: hard
 
@@ -6057,7 +5902,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@standard-schema/spec@npm:^1.0.0, @standard-schema/spec@npm:^1.1.0":
+"@standard-schema/spec@npm:^1.0.0":
   version: 1.1.0
   resolution: "@standard-schema/spec@npm:1.1.0"
   checksum: 10c0/d90f55acde4b2deb983529c87e8025fa693de1a5e8b49ecc6eb84d1fd96328add0e03d7d551442156c7432fd78165b2c26ff561b970a9a881f046abb78d6a526
@@ -6820,17 +6665,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/pg@npm:8.11.6":
-  version: 8.11.6
-  resolution: "@types/pg@npm:8.11.6"
-  dependencies:
-    "@types/node": "npm:*"
-    pg-protocol: "npm:*"
-    pg-types: "npm:^4.0.1"
-  checksum: 10c0/e68e057d9500b25cd776f4fcc547b4880c4f3b0c7b6e03c8a0e5e262b6189dd7a00f4edc8937ffc55a9f6a136a78d7e4a9b6bbe6a46122a95c134f7be66f6842
-  languageName: node
-  linkType: hard
-
 "@types/react-dom@npm:^19.0.1":
   version: 19.2.3
   resolution: "@types/react-dom@npm:19.2.3"
@@ -7425,13 +7259,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"argon2-wasm-edge@npm:^1.0.23":
-  version: 1.0.23
-  resolution: "argon2-wasm-edge@npm:1.0.23"
-  checksum: 10c0/99e7ed1d7eb2555d1400f30226001bb6b2171d059a5e798ff7fda52e5d5fee277ca798afb8911d93b2ab855a1e2960bbda43d5aa8ebc24b8f5942daa82f12fa5
-  languageName: node
-  linkType: hard
-
 "argparse@npm:^1.0.7":
   version: 1.0.10
   resolution: "argparse@npm:1.0.10"
@@ -7777,107 +7604,6 @@ __metadata:
   bin:
     baseline-browser-mapping: dist/cli.cjs
   checksum: 10c0/3296604492f600927a9f519c81164522ac26456e63eb7b6816e39bfbb184494b48c58490639f2c0e35be97969d3a03613fddddbfdd3074710592369ed36957d5
-  languageName: node
-  linkType: hard
-
-"better-auth@npm:^1.1.7":
-  version: 1.5.6
-  resolution: "better-auth@npm:1.5.6"
-  dependencies:
-    "@better-auth/core": "npm:1.5.6"
-    "@better-auth/drizzle-adapter": "npm:1.5.6"
-    "@better-auth/kysely-adapter": "npm:1.5.6"
-    "@better-auth/memory-adapter": "npm:1.5.6"
-    "@better-auth/mongo-adapter": "npm:1.5.6"
-    "@better-auth/prisma-adapter": "npm:1.5.6"
-    "@better-auth/telemetry": "npm:1.5.6"
-    "@better-auth/utils": "npm:0.3.1"
-    "@better-fetch/fetch": "npm:1.1.21"
-    "@noble/ciphers": "npm:^2.1.1"
-    "@noble/hashes": "npm:^2.0.1"
-    better-call: "npm:1.3.2"
-    defu: "npm:^6.1.4"
-    jose: "npm:^6.1.3"
-    kysely: "npm:^0.28.12"
-    nanostores: "npm:^1.1.1"
-    zod: "npm:^4.3.6"
-  peerDependencies:
-    "@lynx-js/react": "*"
-    "@prisma/client": ^5.0.0 || ^6.0.0 || ^7.0.0
-    "@sveltejs/kit": ^2.0.0
-    "@tanstack/react-start": ^1.0.0
-    "@tanstack/solid-start": ^1.0.0
-    better-sqlite3: ^12.0.0
-    drizzle-kit: ">=0.31.4"
-    drizzle-orm: ">=0.41.0"
-    mongodb: ^6.0.0 || ^7.0.0
-    mysql2: ^3.0.0
-    next: ^14.0.0 || ^15.0.0 || ^16.0.0
-    pg: ^8.0.0
-    prisma: ^5.0.0 || ^6.0.0 || ^7.0.0
-    react: ^18.0.0 || ^19.0.0
-    react-dom: ^18.0.0 || ^19.0.0
-    solid-js: ^1.0.0
-    svelte: ^4.0.0 || ^5.0.0
-    vitest: ^2.0.0 || ^3.0.0 || ^4.0.0
-    vue: ^3.0.0
-  peerDependenciesMeta:
-    "@lynx-js/react":
-      optional: true
-    "@prisma/client":
-      optional: true
-    "@sveltejs/kit":
-      optional: true
-    "@tanstack/react-start":
-      optional: true
-    "@tanstack/solid-start":
-      optional: true
-    better-sqlite3:
-      optional: true
-    drizzle-kit:
-      optional: true
-    drizzle-orm:
-      optional: true
-    mongodb:
-      optional: true
-    mysql2:
-      optional: true
-    next:
-      optional: true
-    pg:
-      optional: true
-    prisma:
-      optional: true
-    react:
-      optional: true
-    react-dom:
-      optional: true
-    solid-js:
-      optional: true
-    svelte:
-      optional: true
-    vitest:
-      optional: true
-    vue:
-      optional: true
-  checksum: 10c0/2f4f7954bf9b198d54b4cee2015e5a6b9e442a6d905e3990203ca839f99480aa4f13e4e7c5d88ce108b1c51d3e9606afb32b749478967eaac707be096e065e18
-  languageName: node
-  linkType: hard
-
-"better-call@npm:1.3.2":
-  version: 1.3.2
-  resolution: "better-call@npm:1.3.2"
-  dependencies:
-    "@better-auth/utils": "npm:^0.3.1"
-    "@better-fetch/fetch": "npm:^1.1.21"
-    rou3: "npm:^0.7.12"
-    set-cookie-parser: "npm:^3.0.1"
-  peerDependencies:
-    zod: ^4.0.0
-  peerDependenciesMeta:
-    zod:
-      optional: true
-  checksum: 10c0/d482fdf0fdc735c80a995895a4898004aebc93f488ba99fafd98da4d4a1ee8c3243aac2a121c2298462b477dc61f6b2e7de850e2bef086479cf4c1cf89bda35c
   languageName: node
   linkType: hard
 
@@ -8974,13 +8700,6 @@ __metadata:
     has-property-descriptors: "npm:^1.0.0"
     object-keys: "npm:^1.1.1"
   checksum: 10c0/88a152319ffe1396ccc6ded510a3896e77efac7a1bfbaa174a7b00414a1747377e0bb525d303794a47cf30e805c2ec84e575758512c6e44a993076d29fd4e6c3
-  languageName: node
-  linkType: hard
-
-"defu@npm:^6.1.4":
-  version: 6.1.6
-  resolution: "defu@npm:6.1.6"
-  checksum: 10c0/6755a914d4d1b40346d582cadf3af0c4efb1b89c462631f4c8a20c933da88d5da674344dd0856426d611d5fc0c65a3ffa82388519127b06f1a688dc103ddf5ba
   languageName: node
   linkType: hard
 
@@ -10241,15 +9960,6 @@ __metadata:
     react-server-dom-webpack:
       optional: true
   checksum: 10c0/f3861cbd864607232d5d053b7a38f0db04b54088bae1a0a50f9ca567b7bc8b96df91e090981023c7651c6f04ee657bcb32f9defd5a52b2050fde047823424bab
-  languageName: node
-  linkType: hard
-
-"expo-secure-store@npm:15.0.8":
-  version: 15.0.8
-  resolution: "expo-secure-store@npm:15.0.8"
-  peerDependencies:
-    expo: "*"
-  checksum: 10c0/c3a581aae66990c442e566c677cd884f623e33ab43015e7c1be9c6fe46fbf0dfc57c6213ec12984c86455485d0b22524e37b8d24e19acfa8b7d0d83be914496b
   languageName: node
   linkType: hard
 
@@ -12245,13 +11955,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:^6.1.3":
-  version: 6.2.2
-  resolution: "jose@npm:6.2.2"
-  checksum: 10c0/201f4776d77eccd339de99fb3ba940fdf03db15e64be7a99b511e53c232e3f3818e3f21b95223d62f99315a2ab76b4251cedd94e067de56893e45273a8d2151b
-  languageName: node
-  linkType: hard
-
 "js-tokens@npm:^3.0.0 || ^4.0.0, js-tokens@npm:^4.0.0":
   version: 4.0.0
   resolution: "js-tokens@npm:4.0.0"
@@ -12455,13 +12158,6 @@ __metadata:
   version: 3.0.3
   resolution: "kleur@npm:3.0.3"
   checksum: 10c0/cd3a0b8878e7d6d3799e54340efe3591ca787d9f95f109f28129bdd2915e37807bf8918bb295ab86afb8c82196beec5a1adcaf29042ce3f2bd932b038fe3aa4b
-  languageName: node
-  linkType: hard
-
-"kysely@npm:^0.28.12":
-  version: 0.28.15
-  resolution: "kysely@npm:0.28.15"
-  checksum: 10c0/48a3a69ee423e255dde3112261be41e8fd505cd970a868c8dce957f7fa602d3cb9d7a328f95d0e94bd232cf60176fc7512d72ce37cd85664bc483c238dcf4659
   languageName: node
   linkType: hard
 
@@ -13946,7 +13642,6 @@ __metadata:
     expo-modules-core: "npm:3.0.30"
     expo-notifications: "npm:0.32.17"
     expo-router: "patch:expo-router@npm%3A6.0.11#~/.yarn/patches/expo-router+6.0.11.patch"
-    expo-secure-store: "npm:15.0.8"
     expo-sensors: "npm:15.0.8"
     expo-speech: "npm:14.0.8"
     expo-splash-screen: "npm:31.0.13"
@@ -14047,13 +13742,6 @@ __metadata:
   bin:
     nanoid: bin/nanoid.cjs
   checksum: 10c0/40e7f70b3d15f725ca072dfc4f74e81fcf1fbb02e491cf58ac0c79093adc9b0a73b152bcde57df4b79cd097e13023d7504acb38404a4da7bc1cd8e887b82fe0b
-  languageName: node
-  linkType: hard
-
-"nanostores@npm:^1.1.1":
-  version: 1.2.0
-  resolution: "nanostores@npm:1.2.0"
-  checksum: 10c0/282ca01dacc3679358268fcd3ef6b9eb3ad76fd8b0f476789573b3215dd8af7a83191b29819c4d489c20891eb47493c67a49a05aca938c3ad215c14452179be5
   languageName: node
   linkType: hard
 
@@ -14372,13 +14060,6 @@ __metadata:
     has-symbols: "npm:^1.1.0"
     object-keys: "npm:^1.1.1"
   checksum: 10c0/3b2732bd860567ea2579d1567525168de925a8d852638612846bd8082b3a1602b7b89b67b09913cbb5b9bd6e95923b2ae73580baa9d99cb4e990564e8cbf5ddc
-  languageName: node
-  linkType: hard
-
-"obuf@npm:~1.1.2":
-  version: 1.1.2
-  resolution: "obuf@npm:1.1.2"
-  checksum: 10c0/520aaac7ea701618eacf000fc96ae458e20e13b0569845800fc582f81b386731ab22d55354b4915d58171db00e79cfcd09c1638c02f89577ef092b38c65b7d81
   languageName: node
   linkType: hard
 
@@ -14821,42 +14502,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg-int8@npm:1.0.1":
-  version: 1.0.1
-  resolution: "pg-int8@npm:1.0.1"
-  checksum: 10c0/be6a02d851fc2a4ae3e9de81710d861de3ba35ac927268973eb3cb618873a05b9424656df464dd43bd7dc3fc5295c3f5b3c8349494f87c7af50ec59ef14e0b98
-  languageName: node
-  linkType: hard
-
-"pg-numeric@npm:1.0.2":
-  version: 1.0.2
-  resolution: "pg-numeric@npm:1.0.2"
-  checksum: 10c0/43dd9884e7b52c79ddc28d2d282d7475fce8bba13452d33c04ceb2e0a65f561edf6699694e8e1c832ff9093770496363183c950dd29608e1bdd98f344b25bca9
-  languageName: node
-  linkType: hard
-
-"pg-protocol@npm:*":
-  version: 1.13.0
-  resolution: "pg-protocol@npm:1.13.0"
-  checksum: 10c0/a4e851e6bb8ff404ca19d561cf49b6b0caf45163bd3f289889edaf6c4e9fb25b08fb57f50d37a8cc86007efcf2cbb3dd2372c97a353a546f45eb49ddebc84fa9
-  languageName: node
-  linkType: hard
-
-"pg-types@npm:^4.0.1":
-  version: 4.1.0
-  resolution: "pg-types@npm:4.1.0"
-  dependencies:
-    pg-int8: "npm:1.0.1"
-    pg-numeric: "npm:1.0.2"
-    postgres-array: "npm:~3.0.1"
-    postgres-bytea: "npm:~3.0.0"
-    postgres-date: "npm:~2.1.0"
-    postgres-interval: "npm:^3.0.0"
-    postgres-range: "npm:^1.1.1"
-  checksum: 10c0/462a56b5c34e0dff38fc5f6ac939c66e80a92333a79bfb1d963ffe0383ca33427a16899e0b9d23235ce1f5df42473373fb9c9f24e1f614f8698b58cc45435ca6
-  languageName: node
-  linkType: hard
-
 "picocolors@npm:1.1.1, picocolors@npm:^1.0.0, picocolors@npm:^1.0.1, picocolors@npm:^1.1.1":
   version: 1.1.1
   resolution: "picocolors@npm:1.1.1"
@@ -15061,43 +14706,6 @@ __metadata:
     picocolors: "npm:^1.1.1"
     source-map-js: "npm:^1.2.1"
   checksum: 10c0/f1b3f17aaf36d136f59ec373459f18129908235e65dbdc3aee5eef8eba0756106f52de5ec4682e29a2eab53eb25170e7e871b3e4b52a8f1de3d344a514306be3
-  languageName: node
-  linkType: hard
-
-"postgres-array@npm:~3.0.1":
-  version: 3.0.4
-  resolution: "postgres-array@npm:3.0.4"
-  checksum: 10c0/47f3e648da512bacdd6a5ed55cf770605ec271330789faeece0fd13805a49f376d6e5c9e0e353377be11a9545e727dceaa2473566c505432bf06366ccd04c6b2
-  languageName: node
-  linkType: hard
-
-"postgres-bytea@npm:~3.0.0":
-  version: 3.0.0
-  resolution: "postgres-bytea@npm:3.0.0"
-  dependencies:
-    obuf: "npm:~1.1.2"
-  checksum: 10c0/41c79cc48aa730c5ba3eda6ab989a940034f07a1f57b8f2777dce56f1b8cca16c5870582932b5b10cc605048aef9b6157e06253c871b4717cafc6d00f55376aa
-  languageName: node
-  linkType: hard
-
-"postgres-date@npm:~2.1.0":
-  version: 2.1.0
-  resolution: "postgres-date@npm:2.1.0"
-  checksum: 10c0/00a7472c10788f6b0d08d24108bf1eb80858de1bd6317740198a564918ea4a69b80c98148167b92ae688abd606483020d0de0dd3a36f3ea9a3e26bbeef3464f4
-  languageName: node
-  linkType: hard
-
-"postgres-interval@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "postgres-interval@npm:3.0.0"
-  checksum: 10c0/8b570b30ea37c685e26d136d34460f246f98935a1533defc4b53bb05ee23ae3dc7475b718ec7ea607a57894d8c6b4f1adf67ca9cc83a75bdacffd427d5c68de8
-  languageName: node
-  linkType: hard
-
-"postgres-range@npm:^1.1.1":
-  version: 1.1.4
-  resolution: "postgres-range@npm:1.1.4"
-  checksum: 10c0/254494ef81df208e0adeae6b66ce394aba37914ea14c7ece55a45fb6691b7db04bee74c825380a47c887a9f87158fd3d86f758f9cc60b76d3a38ce5aca7912e8
   languageName: node
   linkType: hard
 
@@ -16420,13 +16028,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rou3@npm:^0.7.12":
-  version: 0.7.12
-  resolution: "rou3@npm:0.7.12"
-  checksum: 10c0/2ea87ddd91a5d0f9d9671fa2bb714f57566eae33ecb24e8a61bb298aca8c226483e59cafe1c60297ac9aa58b2b6ad506447374cdbff4e99cf0f9f72a9dae09dc
-  languageName: node
-  linkType: hard
-
 "rrweb-cssom@npm:^0.8.0":
   version: 0.8.0
   resolution: "rrweb-cssom@npm:0.8.0"
@@ -16587,13 +16188,6 @@ __metadata:
   version: 0.0.1
   resolution: "server-only@npm:0.0.1"
   checksum: 10c0/4704f0ef85da0be981af6d4ed8e739d39bcfd265b9c246a684060acda5642d0fdc6daffc2308e71e2682c5f508090978802eae0a77623c9b90a49f9ae68048d6
-  languageName: node
-  linkType: hard
-
-"set-cookie-parser@npm:^3.0.1":
-  version: 3.1.0
-  resolution: "set-cookie-parser@npm:3.1.0"
-  checksum: 10c0/7465e389ff9fb7ff243fd55f0f48b5648d53a560903db170a7f766c2b82f22f4242c4d366fcdf12afdd376496f84058025d889e718459256ecbfc9a5fe7755f5
   languageName: node
   linkType: hard
 
@@ -18246,8 +17840,6 @@ __metadata:
   resolution: "web@workspace:apps/web"
   dependencies:
     "@base-ui/react": "npm:^1.3.0"
-    "@neondatabase/serverless": "npm:^0.10.4"
-    "@opentelemetry/api": "npm:^1.9.0"
     "@tailwindcss/postcss": "npm:^4.1.16"
     "@tanstack/react-query": "npm:^5.72.2"
     "@testing-library/dom": "npm:^10.4.0"
@@ -18257,8 +17849,6 @@ __metadata:
     "@types/react": "npm:^19.0.1"
     "@types/react-dom": "npm:^19.0.1"
     "@types/ws": "npm:^8.18.1"
-    argon2-wasm-edge: "npm:^1.0.23"
-    better-auth: "npm:^1.1.7"
     class-variance-authority: "npm:^0.7.1"
     clsx: "npm:^2.1.1"
     jsdom: "npm:^26.1.0"
@@ -18278,7 +17868,6 @@ __metadata:
     vanilla-colorful: "npm:^0.7.2"
     vaul: "npm:^1.1.2"
     vitest: "npm:^3.2.6"
-    ws: "npm:^8.18.2"
   languageName: unknown
   linkType: soft
 
@@ -18516,7 +18105,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^8.11.0, ws@npm:^8.12.1, ws@npm:^8.18.0, ws@npm:^8.18.2, ws@npm:^8.2.3":
+"ws@npm:^8.11.0, ws@npm:^8.12.1, ws@npm:^8.18.0, ws@npm:^8.2.3":
   version: 8.20.0
   resolution: "ws@npm:8.20.0"
   peerDependencies:
@@ -18689,13 +18278,6 @@ __metadata:
   version: 4.1.11
   resolution: "zod@npm:4.1.11"
   checksum: 10c0/ce6a4c4acfbf51d7dd0f2669c82f207d62a1f00264eef608994b94eb99d86a74c99f59b0dd3e61ef82909ee136631378b709e0908f0a02a2d5c21d0c497de5db
-  languageName: node
-  linkType: hard
-
-"zod@npm:^4.3.6":
-  version: 4.3.6
-  resolution: "zod@npm:4.3.6"
-  checksum: 10c0/860d25a81ab41d33aa25f8d0d07b091a04acb426e605f396227a796e9e800c44723ed96d0f53a512b57be3d1520f45bf69c0cb3b378a232a00787a2609625307
   languageName: node
   linkType: hard
 

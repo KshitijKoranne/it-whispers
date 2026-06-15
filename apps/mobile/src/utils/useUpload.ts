@@ -1,5 +1,4 @@
 import type { ReactNativeAsset } from '@uploadcare/upload-client';
-import * as SecureStore from 'expo-secure-store';
 import * as React from 'react';
 
 interface UploadInputReactNative {
@@ -33,7 +32,7 @@ interface UploadHookResult {
 // Both paths upload via the proxy's /_create/api/upload/ (respects S3 flag).
 // Web: globalThis.fetch with full proxy URL + no custom headers (avoids CORS
 // preflight — the proxy adds project-group-id from the hostname server-side).
-// Native: FileSystem.uploadAsync to same URL with manual auth headers.
+// Native: FileSystem.uploadAsync to same URL with project routing headers.
 function useUpload(): [(input: UploadInput) => Promise<UploadResult>, UploadHookResult] {
   const [loading, setLoading] = React.useState(false);
   const upload = React.useCallback(async (input: UploadInput): Promise<UploadResult> => {
@@ -63,14 +62,6 @@ function useUpload(): [(input: UploadInput) => Promise<UploadResult>, UploadHook
             'x-forwarded-host': host || '',
             'x-createxyz-host': host || '',
           };
-
-          try {
-            const authStr = await SecureStore.getItemAsync(`${projectGroupId}-jwt`);
-            if (authStr) {
-              const auth = JSON.parse(authStr);
-              if (auth?.jwt) headers['authorization'] = `Bearer ${auth.jwt}`;
-            }
-          } catch {}
 
           const uploadResult = await FileSystem.uploadAsync(
             `${proxyBaseUrl}/_create/api/upload/`,

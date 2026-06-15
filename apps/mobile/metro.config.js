@@ -15,10 +15,6 @@ const config = getDefaultConfig(__dirname);
 config.maxWorkers = 6;
 
 const WEB_ALIASES = {
-	"expo-secure-store": path.resolve(
-		__dirname,
-		"./polyfills/web/secureStore.web.ts",
-	),
 	"react-native-webview": path.resolve(
 		__dirname,
 		"./polyfills/web/webview.web.tsx",
