@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { hasSavedGame, deleteSave } from '@/lib/game/save';
+import { hasSavedGame, deleteSave, loadSettings, saveSettings } from '@/lib/game/save';
 import { SettingsModal } from '@/components/game/SettingsModal';
 import { GameSettings } from '@/lib/game/types';
 
@@ -20,14 +20,7 @@ export default function HomePage() {
 
   useEffect(() => {
     setShowContinue(hasSavedGame());
-    const savedSettings = localStorage.getItem('it-whispers-settings');
-    if (savedSettings) {
-      try {
-        setSettings(JSON.parse(savedSettings));
-      } catch {
-        // ignore malformed settings
-      }
-    }
+    setSettings(loadSettings());
   }, []);
 
   const handleNewGame = () => {
@@ -49,7 +42,7 @@ export default function HomePage() {
 
   const handleSettingsChange = (newSettings: GameSettings) => {
     setSettings(newSettings);
-    localStorage.setItem('it-whispers-settings', JSON.stringify(newSettings));
+    saveSettings(newSettings);
   };
 
   const handleResetSave = () => {

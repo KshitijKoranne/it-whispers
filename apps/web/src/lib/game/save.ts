@@ -1,9 +1,10 @@
 // Save and load game state from local storage
 
-import { GameState } from './types';
+import { GameSettings, GameState } from './types';
 import { createInitialGameState } from './state';
 
 const SAVE_KEY = 'it-whispers-save';
+const SETTINGS_KEY = 'it-whispers-settings';
 
 /**
  * Merges a loaded save with the current initial-state defaults so that
@@ -59,4 +60,29 @@ export function hasSavedGame(): boolean {
 
 export function deleteSave(): void {
   localStorage.removeItem(SAVE_KEY);
+}
+
+export function loadSettings(): GameSettings {
+  const defaults = createInitialGameState().settings;
+  try {
+    const saved = localStorage.getItem(SETTINGS_KEY);
+    if (!saved) return defaults;
+    const parsed = JSON.parse(saved) as Partial<GameSettings>;
+    return {
+      sound: typeof parsed.sound === 'boolean' ? parsed.sound : defaults.sound,
+      music: typeof parsed.music === 'boolean' ? parsed.music : defaults.music,
+      textSpeed:
+        parsed.textSpeed === 'instant' || parsed.textSpeed === 'normal' || parsed.textSpeed === 'slow'
+          ? parsed.textSpeed
+          : defaults.textSpeed,
+      reducedMotion:
+        typeof parsed.reducedMotion === 'boolean' ? parsed.reducedMotion : defaults.reducedMotion,
+    };
+  } catch {
+    return defaults;
+  }
+}
+
+export function saveSettings(settings: GameSettings): void {
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
 }

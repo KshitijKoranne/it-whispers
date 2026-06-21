@@ -1,14 +1,22 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { EventLogEntry } from '@/lib/game/types';
+import { EventLogEntry, GameSettings } from '@/lib/game/types';
 
-/** Milliseconds between each character reveal. ~22ms ≈ quiet, readable pace. */
-const MS_PER_CHAR = 22;
+const TEXT_SPEED_MS: Record<GameSettings['textSpeed'], number> = {
+  instant: 0,
+  normal: 22,
+  slow: 45,
+};
+
+export function getTextRevealDelay(textSpeed: GameSettings['textSpeed']): number {
+  return TEXT_SPEED_MS[textSpeed];
+}
 
 interface EventLogProps {
   entries: EventLogEntry[];
   reducedMotion?: boolean;
+  textSpeed?: GameSettings['textSpeed'];
   /** ID of the entry currently being streamed. Null = nothing streaming. */
   streamingId?: string | null;
   /** Called the moment streaming finishes (naturally or by skip). */
@@ -18,6 +26,7 @@ interface EventLogProps {
 export function EventLog({
   entries,
   reducedMotion = false,
+  textSpeed = 'normal',
   streamingId = null,
   onStreamComplete,
 }: EventLogProps) {
@@ -64,8 +73,10 @@ export function EventLog({
       clearInterval(intervalRef.current);
     }
 
-    // Reduced-motion: skip to end immediately
-    if (reducedMotion) {
+    const revealDelay = getTextRevealDelay(textSpeed);
+
+    // Reduced-motion and instant text skip to end immediately.
+    if (reducedMotion || revealDelay === 0) {
       setStreamedText(entry.text);
       onCompleteRef.current?.();
       return;
@@ -81,7 +92,7 @@ export function EventLog({
         intervalRef.current = null;
         onCompleteRef.current?.();
       }
-    }, MS_PER_CHAR);
+    }, revealDelay);
 
     return () => {
       if (intervalRef.current) {

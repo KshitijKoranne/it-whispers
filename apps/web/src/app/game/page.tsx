@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { GameState } from '@/lib/game/types';
 import { createInitialGameState, addLogEntry, tickAfterAction } from '@/lib/game/state';
-import { saveGame, loadGame } from '@/lib/game/save';
+import { saveGame, loadGame, loadSettings, saveSettings } from '@/lib/game/save';
 import { getVisibleActions } from '@/lib/game/actions';
 import { filterInitialReleaseActions, isInitialReleaseComplete } from '@/lib/game/initial-release';
 import { ActionButton } from '@/components/game/ActionButton';
@@ -208,7 +208,7 @@ function GamePageContent() {
 
   useEffect(() => {
     if (isNewGame) {
-      const initialState = createInitialGameState();
+      const initialState = { ...createInitialGameState(), settings: loadSettings() };
       const stateWithIntro = addLogEntry(
         addLogEntry(
           addLogEntry(
@@ -341,7 +341,7 @@ function GamePageContent() {
     const updated = { ...gameState, settings: newSettings };
     setGameState(updated);
     handleSaveGame(updated);
-    localStorage.setItem('it-whispers-settings', JSON.stringify(newSettings));
+    saveSettings(newSettings);
     syncAmbientAudio(updated);
   };
 
@@ -498,6 +498,7 @@ function GamePageContent() {
               <EventLog
                 entries={gameState.eventLog}
                 reducedMotion={gameState.settings.reducedMotion}
+                textSpeed={gameState.settings.textSpeed}
                 streamingId={streamingEntryId}
                 onStreamComplete={() => setStreamingEntryId(null)}
               />
