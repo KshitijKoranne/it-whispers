@@ -14,6 +14,8 @@ export default function HomePage() {
   const [settings, setSettings] = useState<GameSettings>({
     sound: true,
     music: true,
+    musicVolume: 1,
+    effectsVolume: 1,
     textSpeed: 'normal',
     reducedMotion: false,
   });

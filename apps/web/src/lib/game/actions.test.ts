@@ -357,6 +357,54 @@ describe('Chapter 4 transition', () => {
     expect(forceDrawer.isDisabled?.(withSpade)).toBe(false);
   });
 
+  it('tracks matches as finite resources', () => {
+    const initial = createInitialGameState();
+    const searchable = {
+      ...initial,
+      repetition: {
+        ...initial.repetition,
+        firstGraveListenCount: 1,
+      },
+    };
+    const search = findAction(searchable, 'search-ground');
+    const foundWax = search.onExecute(searchable).newState;
+    const foundMatches = search.onExecute(foundWax).newState;
+
+    expect(foundMatches.resources.matches).toBe(3);
+
+    const litCandle = findAction(
+      { ...foundMatches, resources: { ...foundMatches.resources, candle: 1 } },
+      'light-candle'
+    ).onExecute({ ...foundMatches, resources: { ...foundMatches.resources, candle: 1 } }).newState;
+
+    expect(litCandle.resources.matches).toBe(2);
+
+    const darkAgain = {
+      ...litCandle,
+      lightSystem: { ...litCandle.lightSystem, lightLevel: 0, candleTurnsRemaining: 0 },
+    };
+    const relit = findAction(darkAgain, 'relight-candle').onExecute(darkAgain).newState;
+
+    expect(relit.resources.matches).toBe(1);
+  });
+
+  it('spends a match when lighting the lantern', () => {
+    const readyLantern = chapter2State({
+      flags: {
+        chapter2Active: true,
+        lanternReady: true,
+      },
+      resources: {
+        ...createInitialGameState().resources,
+        matches: 1,
+      },
+    });
+
+    const litLantern = findAction(readyLantern, 'light-lantern').onExecute(readyLantern).newState;
+
+    expect(litLantern.resources.matches).toBe(0);
+  });
+
   it('does not show candle upkeep during the Chapter 2 to Chapter 3 transition', () => {
     const transition = chapter2State({
       chapter: 'Chapter 2 — Complete',

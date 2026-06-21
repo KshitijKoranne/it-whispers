@@ -125,6 +125,18 @@ export function SettingsModal({
           />
         </div>
 
+        <VolumeSlider
+          label="music volume"
+          value={settings.musicVolume}
+          onChange={(v) => onSettingsChange({ ...settings, musicVolume: v })}
+        />
+
+        <VolumeSlider
+          label="effects volume"
+          value={settings.effectsVolume}
+          onChange={(v) => onSettingsChange({ ...settings, effectsVolume: v })}
+        />
+
         {/* Reduced Motion */}
         <div style={rowStyle}>
           <span style={labelStyle}>reduced motion</span>
@@ -247,6 +259,47 @@ export function SettingsModal({
         )}
       </div>
     </div>
+  );
+}
+
+function VolumeSlider({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  onChange: (value: number) => void;
+}) {
+  return (
+    <label style={{ display: 'block', margin: '0 0 1.1rem' }}>
+      <span
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginBottom: '0.45rem',
+          color: '#7a7a7a',
+          fontSize: '0.85rem',
+          letterSpacing: '0.04em',
+        }}
+      >
+        <span>{label}</span>
+        <span>{Math.round(value * 100)}</span>
+      </span>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value={Math.round(value * 100)}
+        aria-label={label}
+        onChange={(event) => onChange(Number(event.currentTarget.value) / 100)}
+        style={{
+          width: '100%',
+          accentColor: '#c8922a',
+          cursor: 'pointer',
+        }}
+      />
+    </label>
   );
 }
 

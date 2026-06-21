@@ -129,6 +129,13 @@ const AUDIO_ASSETS = {
   wind: '/assets/audio/cemetery-wind-loop.wav',
 } as const;
 
+const AUDIO_BASE_VOLUME = {
+  action: 0.55,
+  candle: 0.22,
+  whisper: 0.5,
+  wind: 0.34,
+} as const;
+
 const CHAPTER_VISUALS = {
   chapter1: {
     src: '/assets/visuals/chapter-1-first-grave.png',
@@ -216,6 +223,14 @@ function GamePageContent() {
     wind: null,
   });
 
+  const applyAudioVolumes = useCallback((settings: GameState['settings']) => {
+    const { action, candle, whisper, wind } = audioRef.current;
+    if (action) action.volume = AUDIO_BASE_VOLUME.action * settings.effectsVolume;
+    if (whisper) whisper.volume = AUDIO_BASE_VOLUME.whisper * settings.effectsVolume;
+    if (candle) candle.volume = AUDIO_BASE_VOLUME.candle * settings.musicVolume;
+    if (wind) wind.volume = AUDIO_BASE_VOLUME.wind * settings.musicVolume;
+  }, []);
+
   // Responsive breakpoint detection
   useEffect(() => {
     const check = () => setIsDesktop(window.innerWidth >= 900);
@@ -259,11 +274,11 @@ function GamePageContent() {
     const whisper = new Audio(AUDIO_ASSETS.whisper);
 
     wind.loop = true;
-    wind.volume = 0.09;
     candle.loop = true;
-    candle.volume = 0.05;
-    action.volume = 0.22;
-    whisper.volume = 0.18;
+    wind.volume = AUDIO_BASE_VOLUME.wind;
+    candle.volume = AUDIO_BASE_VOLUME.candle;
+    action.volume = AUDIO_BASE_VOLUME.action;
+    whisper.volume = AUDIO_BASE_VOLUME.whisper;
 
     audioRef.current = { action, candle, whisper, wind };
 
@@ -276,26 +291,31 @@ function GamePageContent() {
     };
   }, []);
 
-  const syncAmbientAudio = useCallback((state: GameState | null) => {
-    const { candle, wind } = audioRef.current;
-    if (!state || !audioUnlockedRef.current || !state.settings.sound) {
-      candle?.pause();
-      wind?.pause();
-      return;
-    }
+  const syncAmbientAudio = useCallback(
+    (state: GameState | null) => {
+      const { candle, wind } = audioRef.current;
+      if (!state || !audioUnlockedRef.current || !state.settings.sound) {
+        candle?.pause();
+        wind?.pause();
+        return;
+      }
 
-    if (state.settings.music) {
-      void wind?.play().catch(() => {});
-    } else {
-      wind?.pause();
-    }
+      applyAudioVolumes(state.settings);
 
-    if (state.lightSystem.lightLevel > 0) {
-      void candle?.play().catch(() => {});
-    } else {
-      candle?.pause();
-    }
-  }, []);
+      if (state.settings.music) {
+        void wind?.play().catch(() => {});
+      } else {
+        wind?.pause();
+      }
+
+      if (state.lightSystem.lightLevel > 0) {
+        void candle?.play().catch(() => {});
+      } else {
+        candle?.pause();
+      }
+    },
+    [applyAudioVolumes]
+  );
 
   useEffect(() => {
     syncAmbientAudio(gameState);
@@ -303,6 +323,8 @@ function GamePageContent() {
     gameState,
     gameState?.settings.sound,
     gameState?.settings.music,
+    gameState?.settings.musicVolume,
+    gameState?.settings.effectsVolume,
     gameState?.lightSystem.lightLevel,
     syncAmbientAudio,
   ]);
@@ -317,10 +339,11 @@ function GamePageContent() {
       if (!gameState?.settings.sound || !audioUnlockedRef.current) return;
       const audio = audioRef.current[cue];
       if (!audio) return;
+      applyAudioVolumes(gameState.settings);
       audio.currentTime = 0;
       void audio.play().catch(() => {});
     },
-    [gameState?.settings.sound]
+    [applyAudioVolumes, gameState?.settings]
   );
 
   const handleSaveGame = (state: GameState) => {
@@ -376,6 +399,44 @@ function GamePageContent() {
 
   const releaseComplete = isInitialReleaseComplete(gameState);
   const visibleActions = filterInitialReleaseActions(gameState, getVisibleActions(gameState));
+  const actionsPanel = (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: isDesktop ? '1rem' : 0 }}>
+      <div
+        style={{
+          fontSize: '0.8125rem',
+          color: '#5a5a5a',
+          letterSpacing: '0.28em',
+          textTransform: 'uppercase',
+        }}
+      >
+        actions
+      </div>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+        {visibleActions.map((action) => {
+          const isDisabled = action.isDisabled ? action.isDisabled(gameState) : false;
+          const effectivelyDisabled = isDisabled || isStreaming;
+          const disabledReason = isStreaming
+            ? 'click the log or press space to continue'
+            : isDisabled && action.getDisabledReason
+              ? action.getDisabledReason(gameState)
+              : undefined;
+          return (
+            <ActionButton
+              key={action.id}
+              label={action.label}
+              description={action.description}
+              cooldownSeconds={action.cooldownSeconds}
+              reducedMotion={gameState.settings.reducedMotion}
+              disabled={effectivelyDisabled}
+              disabledReason={disabledReason}
+              onClick={() => handleActionClick(action.id)}
+            />
+          );
+        })}
+      </div>
+      {releaseComplete && <ComingSoonPanel onReturnToTitle={handleReturnToTitle} />}
+    </div>
+  );
 
   // ── Grain overlay (inline SVG data-url noise) ──────────────
   const grainStyle: React.CSSProperties = {
@@ -527,44 +588,7 @@ function GamePageContent() {
               />
             </div>
 
-            {/* Actions */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <div
-                style={{
-                  fontSize: '0.8125rem',
-                  color: '#5a5a5a',
-                  letterSpacing: '0.28em',
-                  textTransform: 'uppercase',
-                }}
-              >
-                actions
-              </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                {visibleActions.map((action) => {
-                  const isDisabled = action.isDisabled ? action.isDisabled(gameState) : false;
-                  // Also disable all buttons while streaming; only the log click / Space skips
-                  const effectivelyDisabled = isDisabled || isStreaming;
-                  const disabledReason = isStreaming
-                    ? 'click the log or press space to continue'
-                    : isDisabled && action.getDisabledReason
-                      ? action.getDisabledReason(gameState)
-                      : undefined;
-                  return (
-                    <ActionButton
-                      key={action.id}
-                      label={action.label}
-                      description={action.description}
-                      cooldownSeconds={action.cooldownSeconds}
-                      reducedMotion={gameState.settings.reducedMotion}
-                      disabled={effectivelyDisabled}
-                      disabledReason={disabledReason}
-                      onClick={() => handleActionClick(action.id)}
-                    />
-                  );
-                })}
-              </div>
-              {releaseComplete && <ComingSoonPanel onReturnToTitle={handleReturnToTitle} />}
-            </div>
+            {!isDesktop && actionsPanel}
           </div>
 
           {/* ── Resource panel ───────────────────────────────── */}
@@ -602,6 +626,7 @@ function GamePageContent() {
 
             {/* Panel: always visible on desktop, toggle-controlled on mobile */}
             {(isDesktop || resourcePanelOpen) && <ResourcePanel state={gameState} />}
+            {isDesktop && actionsPanel}
           </div>
         </div>
       </div>

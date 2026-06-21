@@ -107,6 +107,8 @@ export function createInitialGameState(): GameState {
     settings: {
       sound: true,
       music: true,
+      musicVolume: 1,
+      effectsVolume: 1,
       textSpeed: 'normal',
       reducedMotion: false,
     },

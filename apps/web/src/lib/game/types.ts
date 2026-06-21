@@ -126,6 +126,8 @@ export interface Grave {
 export interface GameSettings {
   sound: boolean;
   music: boolean;
+  musicVolume: number;
+  effectsVolume: number;
   textSpeed: 'instant' | 'normal' | 'slow';
   reducedMotion: boolean;
 }

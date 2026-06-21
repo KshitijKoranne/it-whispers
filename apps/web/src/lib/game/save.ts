@@ -6,6 +6,12 @@ import { createInitialGameState } from './state';
 const SAVE_KEY = 'it-whispers-save';
 const SETTINGS_KEY = 'it-whispers-settings';
 
+function readVolume(value: unknown, fallback: number): number {
+  return typeof value === 'number' && Number.isFinite(value)
+    ? Math.min(Math.max(value, 0), 1)
+    : fallback;
+}
+
 /**
  * Merges a loaded save with the current initial-state defaults so that
  * new fields added in later chapters are always present, even on old saves.
@@ -71,6 +77,8 @@ export function loadSettings(): GameSettings {
     return {
       sound: typeof parsed.sound === 'boolean' ? parsed.sound : defaults.sound,
       music: typeof parsed.music === 'boolean' ? parsed.music : defaults.music,
+      musicVolume: readVolume(parsed.musicVolume, defaults.musicVolume),
+      effectsVolume: readVolume(parsed.effectsVolume, defaults.effectsVolume),
       textSpeed:
         parsed.textSpeed === 'instant' || parsed.textSpeed === 'normal' || parsed.textSpeed === 'slow'
           ? parsed.textSpeed

@@ -53,21 +53,14 @@ export function ActionButton({
   };
 
   const isDisabled = disabled || isOnCooldown;
-  const isExternallyDisabled = disabled && !isOnCooldown;
 
   const btnStyle: React.CSSProperties = {
     position: 'relative',
     overflow: 'hidden',
     padding: '0.55rem 1.1rem',
     background: isDisabled ? '#0d0d0d' : hovered ? '#161616' : '#111111',
-    border: `1px solid ${isExternallyDisabled ? '#161616' : isDisabled ? '#1a1a1a' : hovered ? '#3a3a3a' : '#272727'}`,
-    color: isExternallyDisabled
-      ? '#505050'
-      : isDisabled
-        ? '#2e2e2e'
-        : hovered
-          ? '#e2d9c8'
-          : '#b0a898',
+    border: `1px solid ${isDisabled ? '#1a1a1a' : hovered ? '#3a3a3a' : '#272727'}`,
+    color: isDisabled ? '#2e2e2e' : hovered ? '#e2d9c8' : '#b0a898',
     fontSize: '1rem',
     fontFamily: 'var(--font-prose)',
     letterSpacing: '0.06em',
@@ -104,20 +97,6 @@ export function ActionButton({
         {isOnCooldown && !reducedMotion && <span style={fillStyle} />}
         <span style={{ position: 'relative', zIndex: 1 }}>{label}</span>
       </button>
-      {isExternallyDisabled && disabledReason && (
-        <span
-          style={{
-            fontSize: '0.9375rem',
-            color: '#686868',
-            letterSpacing: '0.01em',
-            fontFamily: 'var(--font-prose)',
-            fontStyle: 'italic',
-            paddingLeft: '0.15rem',
-          }}
-        >
-          {disabledReason}
-        </span>
-      )}
     </div>
   );
 }

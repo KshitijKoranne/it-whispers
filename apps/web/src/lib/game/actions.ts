@@ -119,7 +119,7 @@ const searchGroundAction: GameAction = {
     } else if (count === 1) {
       text = 'pressed into the dirt: three matches, damp, but usable.';
       entryType = 'resource';
-      newState.resources = { ...newState.resources, matches: newState.resources.matches + 1 };
+      newState.resources = { ...newState.resources, matches: newState.resources.matches + 3 };
       newState = setFlag(newState, 'hasFoundMatches', true);
     } else if (count === 2) {
       text = 'a candle. half-melted, but still good.\nsomeone left it here.';
@@ -205,10 +205,10 @@ const lightCandleAction: GameAction = {
       'the match complains against the box.\nthen flame.\nthe candle catches.\nthe nearest whisper pulls away from the light.';
     newState = addLogEntry(newState, text, 'story');
 
-    // Consume the candle stub; matches are reusable — do not remove them
     newState.resources = {
       ...newState.resources,
       candle: newState.resources.candle - 1,
+      matches: newState.resources.matches - 1,
     };
     newState.lightSystem = {
       ...newState.lightSystem,
@@ -245,7 +245,7 @@ const relightCandleAction: GameAction = {
     const text = 'you strike another match.\nthe candle wakes reluctantly.';
     newState = addLogEntry(newState, text, 'story');
 
-    // Matches are reusable — do not consume them; the candle stub is already placed
+    newState.resources = { ...newState.resources, matches: newState.resources.matches - 1 };
     newState.lightSystem = {
       ...newState.lightSystem,
       lightLevel: 1,
@@ -793,7 +793,7 @@ const lightLanternAction: GameAction = {
     const text =
       'the match flares.\nbehind the glass, the lantern catches.\nthe shed becomes smaller.\nthe dark does not.';
     newState = addLogEntry(newState, text, 'story');
-    // Matches are reusable — do not consume them
+    newState.resources = { ...newState.resources, matches: newState.resources.matches - 1 };
     newState.lightSystem = {
       ...newState.lightSystem,
       lightLevel: 3,
