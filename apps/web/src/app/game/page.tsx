@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { GameState } from '@/lib/game/types';
 import { createInitialGameState, addLogEntry, tickAfterAction } from '@/lib/game/state';
-import { saveGame, loadGame, loadSettings, saveSettings } from '@/lib/game/save';
+import { saveGame, loadGame, loadSettings, saveSettings, deleteSave } from '@/lib/game/save';
 import { getVisibleActions } from '@/lib/game/actions';
 import { filterInitialReleaseActions, isInitialReleaseComplete } from '@/lib/game/initial-release';
 import { ActionButton } from '@/components/game/ActionButton';
@@ -75,7 +75,7 @@ function LoadingScreen() {
   );
 }
 
-function ComingSoonPanel() {
+function ComingSoonPanel({ onReturnToTitle }: { onReturnToTitle: () => void }) {
   return (
     <div
       style={{
@@ -100,6 +100,24 @@ function ComingSoonPanel() {
         The first arc is complete. The nameless row, living-name chapters, and paid expansions
         will open in a later update.
       </div>
+      <button
+        type="button"
+        onClick={onReturnToTitle}
+        style={{
+          marginTop: '1rem',
+          background: '#131313',
+          border: '1px solid #2e2e2e',
+          color: '#c8bfaf',
+          cursor: 'pointer',
+          fontFamily: 'inherit',
+          fontSize: '0.92rem',
+          letterSpacing: '0.1em',
+          padding: '0.65rem 1rem',
+          textTransform: 'lowercase',
+        }}
+      >
+        return to title
+      </button>
     </div>
   );
 }
@@ -346,6 +364,11 @@ function GamePageContent() {
   };
 
   const handleResetSave = () => {
+    deleteSave();
+    router.push('/');
+  };
+
+  const handleReturnToTitle = () => {
     router.push('/');
   };
 
@@ -540,7 +563,7 @@ function GamePageContent() {
                   );
                 })}
               </div>
-              {releaseComplete && <ComingSoonPanel />}
+              {releaseComplete && <ComingSoonPanel onReturnToTitle={handleReturnToTitle} />}
             </div>
           </div>
 
